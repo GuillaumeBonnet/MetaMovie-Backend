@@ -16,5 +16,6 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", routerIndex);
 app.use("/users", routerUsers);
+console.log("gboDebug: in app file");
 
 export { app };
