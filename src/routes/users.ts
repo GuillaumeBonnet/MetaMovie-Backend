@@ -5,11 +5,11 @@ import { tmp } from "./tmp";
 
 /* GET users listing. */
 routerUsers.get(
-  "/",
-  function (req: Request, res: Response, next: NextFunction) {
-    tmp.get("aString");
-    res.send("respond with a resourcee");
-  }
+	"/",
+	function (req: Request, res: Response, next: NextFunction) {
+		tmp.get("aString");
+		res.send("respond with a resourcee");
+	}
 );
 
 export { routerUsers };

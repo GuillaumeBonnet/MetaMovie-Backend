@@ -11,7 +11,7 @@ import { tmp } from "./routes/tmp";
 // });
 const mock = jest.spyOn(tmp, "get"); // spy on foo
 mock.mockImplementation(() => {
-  console.log("gboDebug: mocked impl");
+	console.log("gboDebug: mocked impl");
 });
 // const mockedrouterUsers = routerUsers as jest.MockedFunction<
 //   typeof routerUsers
@@ -20,12 +20,12 @@ mock.mockImplementation(() => {
 //   console.log("gboDebug: mocked Impl");
 // });
 describe("Test the root path", () => {
-  test("It should response the GET method", () => {
-    return request(app)
-      .get("/users")
-      .then((response: any) => {
-        expect(response.statusCode).toBe(200);
-        expect(mock).toHaveBeenCalledTimes(1);
-      });
-  });
+	test("It should response the GET method", () => {
+		return request(app)
+			.get("/users")
+			.then((response: any) => {
+				expect(response.statusCode).toBe(200);
+				expect(mock).toHaveBeenCalledTimes(1);
+			});
+	});
 });
