@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model card {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("creation_timestamp")
+  updatedAt DateTime @updatedAt @map("update_timestamp")
+  deckOrder Int      @map("deck_order")
+  from      String   @map("from_moment")
+  text      String
+  to        String   @map("to_moment")
+  deckId    Int      @map("deck_id")
+  positionX Float    @map("position_x")
+  positionY Float    @map("position_y")
+  deck      deck     @relation(fields: [deckId], references: [id])
+}
+
+model deck {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now()) @map("creation_timestamp")
+  updatedAt   DateTime @updatedAt @map("update_timestamp")
+  languageTag String?  @map("language_tag")
+  name        String
+  card        card[]
+}
