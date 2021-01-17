@@ -1,2 +1,2 @@
-Install ts-node globally:
-npm install -g ts-node
+# commands
+- `npx prisma generate` after updating schema.prisma
