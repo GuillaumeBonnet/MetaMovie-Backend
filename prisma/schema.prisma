@@ -27,5 +27,5 @@ model deck {
   updatedAt   DateTime @updatedAt @map("update_timestamp")
   languageTag String?  @map("language_tag")
   name        String
-  card        card[]
+  cards       card[]
 }
