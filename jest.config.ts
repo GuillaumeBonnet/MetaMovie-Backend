@@ -9,5 +9,6 @@ const config: Config.InitialOptions = {
 		"^.+\\.(ts|tsx)$": "<rootDir>/preprocessor.js",
 	},
 	testMatch: ["**/*test.(ts|tsx)"],
+	collectCoverage: false,
 };
 export default config;

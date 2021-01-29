@@ -1,11 +1,18 @@
-import { deck, PrismaClientKnownRequestError } from "@prisma/client";
+import {
+	card,
+	cardCreateArgs,
+	deck,
+	Prisma,
+	PrismaClientKnownRequestError,
+	cardCreateWithoutDeckInput,
+} from "@prisma/client";
 import express from "express";
 const routerDecks = express.Router();
 import { NextFunction, Request, Response } from "express";
 import logger from "morgan";
 import prisma from "../prisma-instance";
-import { checkDeckInput, getIdFromUrl } from "./decksUtils";
-import { CardApi, DeckApi } from "./type";
+import { checkDeckInput, decktoDeckApi, getIdFromUrl } from "./decksUtils";
+import { CardApi, DeckApi, CreateFields, DeckApi_WithoutCards } from "./type";
 
 routerDecks.get(
 	"/",
@@ -44,7 +51,7 @@ routerDecks.get(
 			} else {
 				const deckApi: DeckApi = {
 					...deck,
-					cards: deck.cards.map((card: unknown) => {
+					cards: deck.cards.map((card: any) => {
 						delete (card as any).deckId;
 						delete (card as any).deckOrder;
 						return card as CardApi;
@@ -65,16 +72,24 @@ routerDecks.post(
 		if (body.id) {
 			next("POST operation doesn't use id.");
 		}
-		const newDeck = {
-			name: body.name,
-			languageTag: body.languageTag ?? "EN",
-		} as deck;
-
 		try {
 			const deck = await prisma.deck.create({
-				data: newDeck,
+				data: {
+					name: body.name,
+					languageTag: body.languageTag ?? "EN",
+					cards: {
+						create: body.cards.map((card: any, index) => {
+							card.deckOrder = index;
+							delete card.status;
+							return card;
+						}),
+					},
+				},
+				include: {
+					cards: true,
+				},
 			});
-			res.send(deck);
+			res.send(decktoDeckApi(deck));
 		} catch (error) {
 			next(error);
 		}
@@ -87,20 +102,57 @@ routerDecks.put(
 		const body = checkDeckInput(req, res, next);
 		const deckId = getIdFromUrl("deckId", req, res, next);
 
-		const deckToUpdt = {
-			name: body.name,
-			languageTag: body.languageTag,
-		} as deck;
+		if (!body.cards) {
+			next("Deck Should have a property cards: []");
+		}
+		const cardIdToDelete: number[] = [];
+		const cardIds: number[] = [];
+		type CardApi_WithOrder = CardApi & { deckOrder: number };
+		//todo ajouter deckOrder dans la première boucle, faire un create deck avec create cards et connect cards
+		let deckOrderIndex = 0;
+		for (const card of body.cards) {
+			cardIds.push(card.id);
+		}
+		const deleteOp = prisma.card.deleteMany({
+			where: {
+				deckId: {
+					equals: deckId,
+				},
+			},
+		});
+		const updateOp = prisma.deck.update({
+			where: {
+				id: deckId,
+			},
+			data: {
+				name: body.name,
+				languageTag: body.languageTag,
+				cards: {
+					create: body.cards.map((card, index: number) => {
+						const cardCasted: Prisma.cardCreateWithoutDeckInput = {
+							...card,
+							deckOrder: index,
+						};
+						delete (cardCasted as any).id;
+						return cardCasted;
+					}),
+				},
+			},
+			include: {
+				cards: true,
+			},
+		});
 
 		try {
-			const deck = await prisma.deck.update({
-				where: {
-					id: deckId,
-				},
-				data: deckToUpdt,
-			});
-			res.send(deck);
+			const [
+				deleteOp_result,
+				updateOp_result,
+			] = await prisma.$transaction([deleteOp, updateOp]);
+			console.log("gboDebug:[deleteOp_result]", deleteOp_result);
+			console.log("gboDebug:[updateOp_result]", updateOp_result);
+			res.send(updateOp_result);
 		} catch (error) {
+			console.log("gboDebug:[error]", error);
 			next(error);
 		}
 	}

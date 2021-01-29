@@ -10,10 +10,19 @@ import {
 } from ".prisma/client";
 import { DSAKeyPairKeyObjectOptions } from "crypto";
 import { createDeflate } from "zlib";
-import { CardApi, DeckApi, CreateFields } from "./routes/type";
+import {
+	CardApi,
+	DeckApi,
+	DeckApi_WithoutCards,
+	DeckApi_Createable,
+} from "./routes/type";
 
-let firstDeck: deck;
-let secondDeck: deck;
+let firstDeck: deck & {
+	cards: card[];
+};
+let secondDeck: deck & {
+	cards: card[];
+};
 
 const parseDates = (obj: {
 	updatedAt: string | Date;
@@ -66,6 +75,9 @@ describe("DECKS", () => {
 					],
 				},
 			},
+			include: {
+				cards: true,
+			},
 		});
 
 		secondDeck = await prisma.deck.create({
@@ -93,6 +105,9 @@ describe("DECKS", () => {
 					],
 				},
 			},
+			include: {
+				cards: true,
+			},
 		});
 	});
 	afterAll(() => {
@@ -105,7 +120,7 @@ describe("DECKS", () => {
 		expect(responseBody.length).toBe(2);
 		parseDates(responseBody[0]);
 		expect(responseBody[0]).toEqual(
-			expect.objectContaining<DeckApi>({
+			expect.objectContaining<DeckApi_WithoutCards>({
 				languageTag: "FR",
 				name: "first-deck",
 				createdAt: expect.any(Date),
@@ -119,13 +134,12 @@ describe("DECKS", () => {
 		if (response.error) {
 			console.log("[error]", response.error);
 		}
-		console.log("gboDebug:[response.body]", response.body);
 		const responseBody: DeckApi = response.body;
 		expect(response.status).toBe(200);
 
 		parseDates(responseBody);
 		expect(responseBody).toEqual(
-			expect.objectContaining<DeckApi>({
+			expect.objectContaining<DeckApi_WithoutCards>({
 				languageTag: "FR",
 				name: "first-deck",
 				createdAt: expect.any(Date),
@@ -173,38 +187,78 @@ describe("DECKS", () => {
 		);
 	});
 	test("POST a deck", async () => {
-		const requestBody: CreateFields<DeckApi> = {
+		const requestBody: DeckApi_Createable = {
 			languageTag: "FR",
 			name: "my new deck",
+			cards: [
+				{
+					from: "0:12:1",
+					to: "0:12:2",
+					positionX: 51,
+					positionY: 52,
+					text: "first new card",
+				},
+				{
+					from: "0:22:1",
+					to: "0:22:2",
+					positionX: 61,
+					positionY: 62,
+					text: "second new card",
+				},
+			],
 		};
 
 		const response = await request(app).post("/decks").send(requestBody);
 		expect(response.status).toBe(200);
+		const responseBody = response.body as DeckApi;
 		parseDates(response.body);
-		expect(response.body).toEqual(
-			expect.objectContaining({
-				...requestBody,
+		expect(responseBody).toEqual(
+			expect.objectContaining<DeckApi_WithoutCards>({
 				createdAt: expect.any(Date),
 				updatedAt: expect.any(Date),
 				id: expect.any(Number),
+				languageTag: "FR",
+				name: "my new deck",
 			})
 		);
+		expect(responseBody.cards.length).toBe(2);
+		expect(responseBody.cards[0].text).toBe("first new card");
+		expect(responseBody.cards[1].text).toBe("second new card");
 	});
 	test("It should PUT a deck", async () => {
 		const jsonInput = {
 			name: "first-deck-updated",
+			cards: [
+				{
+					from: "0:12:1",
+					to: "0:12:2",
+					positionX: 51,
+					positionY: 52,
+					text: "first new card",
+				},
+				{
+					id: firstDeck.cards[0].id,
+					from: "0:22:1",
+					to: "0:22:2",
+					positionX: 61,
+					positionY: 62,
+					text: "firstDeck:card1:became:2",
+				},
+			],
 		} as DeckApi;
 
 		const response = await request(app)
 			.put(`/decks/${firstDeck.id}`)
 			.send(jsonInput);
 		if (response.error) {
-			console.log("[error]", response.error);
+			console.log("[gboDebug error]", response.error);
 		}
+		console.log("gboDebug:[response.body]", response.body);
 
 		expect(response.status).toBe(200);
-		parseDates(response.body);
-		expect(response.body).toEqual(
+		const responseBody: DeckApi = response.body;
+		parseDates(responseBody);
+		expect(responseBody).toEqual(
 			expect.objectContaining({
 				name: jsonInput.name,
 				languageTag: "FR",
@@ -218,6 +272,18 @@ describe("DECKS", () => {
 				id: firstDeck.id,
 			},
 		});
-		expect(jsonInput.name).toBe(updatedDeckFromDb.name);
+		expect(updatedDeckFromDb.name).toBe(responseBody.name);
+		expect(responseBody.name).toBe("first-deck-updated");
+		expect(responseBody.cards.length).toBe(2);
+		expect(responseBody.cards[0].text).toBe("first new card");
+		expect(responseBody.cards[0].id).toEqual(expect.any(Number));
+		expect(responseBody.cards[1].text).toBe("firstDeck:card1:became:2");
+		expect(
+			prisma.card.findUnique({
+				where: {
+					id: firstDeck.cards[1].id,
+				},
+			})
+		).not.toBeFalsy();
 	});
 });

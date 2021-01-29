@@ -1,6 +1,6 @@
-import { deck } from "@prisma/client";
+import { card, deck } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
-import { DeckApi } from "./type";
+import { CardApi, DeckApi, DeckApi_WithoutCards } from "./type";
 
 const checkDeckInput = (req: Request, res: Response, next: NextFunction) => {
 	const body = req.body as DeckApi;
@@ -23,4 +23,29 @@ const getIdFromUrl = (
 	}
 	return Number.parseInt(req.params[paramName]);
 };
-export { checkDeckInput, getIdFromUrl };
+const decktoDeckApi = (
+	deck: deck & {
+		cards?: card[];
+	}
+) => {
+	if (!deck.cards) {
+		const deckApi: DeckApi_WithoutCards = {
+			...deck,
+		};
+		return deckApi as DeckApi_WithoutCards;
+	} else {
+		const deckApi: DeckApi = {
+			...deck,
+			cards: deck.cards.map((card: card) => {
+				const cardApi = {
+					...card,
+				} as any;
+				delete cardApi.deckId;
+				delete cardApi.deckOrder;
+				return cardApi as CardApi;
+			}),
+		};
+		return deckApi;
+	}
+};
+export { checkDeckInput, getIdFromUrl, decktoDeckApi };
