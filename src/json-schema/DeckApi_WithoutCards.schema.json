@@ -1,0 +1,36 @@
+{
+    "description": "Model deck",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "number"
+        },
+        "createdAt": {
+            "description": "Enables basic storage and retrieval of dates and times.",
+            "type": "string",
+            "format": "date-time"
+        },
+        "updatedAt": {
+            "description": "Enables basic storage and retrieval of dates and times.",
+            "type": "string",
+            "format": "date-time"
+        },
+        "languageTag": {
+            "type": [
+                "null",
+                "string"
+            ]
+        },
+        "name": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "createdAt",
+        "id",
+        "languageTag",
+        "name",
+        "updatedAt"
+    ],
+    "$schema": "http://json-schema.org/draft-07/schema#"
+}

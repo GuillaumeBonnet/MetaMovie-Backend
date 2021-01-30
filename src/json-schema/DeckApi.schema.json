@@ -1,0 +1,100 @@
+{
+    "allOf": [
+        {
+            "description": "Model deck",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "number"
+                },
+                "createdAt": {
+                    "description": "Enables basic storage and retrieval of dates and times.",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "updatedAt": {
+                    "description": "Enables basic storage and retrieval of dates and times.",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "languageTag": {
+                    "type": [
+                        "null",
+                        "string"
+                    ]
+                },
+                "name": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "createdAt",
+                "id",
+                "languageTag",
+                "name",
+                "updatedAt"
+            ]
+        },
+        {
+            "type": "object",
+            "properties": {
+                "cards": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Pick<card,\"text\"|\"id\"|\"createdAt\"|\"updatedAt\"|\"from\"|\"to\"|\"positionX\"|\"positionY\">"
+                    }
+                }
+            },
+            "required": [
+                "cards"
+            ]
+        }
+    ],
+    "definitions": {
+        "Pick<card,\"text\"|\"id\"|\"createdAt\"|\"updatedAt\"|\"from\"|\"to\"|\"positionX\"|\"positionY\">": {
+            "description": "From T, pick a set of properties whose keys are in the union K",
+            "type": "object",
+            "properties": {
+                "text": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "number"
+                },
+                "createdAt": {
+                    "description": "Enables basic storage and retrieval of dates and times.",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "updatedAt": {
+                    "description": "Enables basic storage and retrieval of dates and times.",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "from": {
+                    "type": "string"
+                },
+                "to": {
+                    "type": "string"
+                },
+                "positionX": {
+                    "type": "number"
+                },
+                "positionY": {
+                    "type": "number"
+                }
+            },
+            "required": [
+                "createdAt",
+                "from",
+                "id",
+                "positionX",
+                "positionY",
+                "text",
+                "to",
+                "updatedAt"
+            ]
+        }
+    },
+    "$schema": "http://json-schema.org/draft-07/schema#"
+}

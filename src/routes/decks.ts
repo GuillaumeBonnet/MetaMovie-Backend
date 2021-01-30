@@ -12,7 +12,7 @@ import { NextFunction, Request, Response } from "express";
 import logger from "morgan";
 import prisma from "../prisma-instance";
 import { checkDeckInput, decktoDeckApi, getIdFromUrl } from "./decksUtils";
-import { CardApi, DeckApi, CreateFields, DeckApi_WithoutCards } from "./type";
+import { CardApi, DeckApi, CreateFields, DeckApi_WithoutCards } from "../type";
 
 routerDecks.get(
 	"/",
