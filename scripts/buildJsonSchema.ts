@@ -6,6 +6,7 @@ import fs from "fs";
 // optionally pass argument to schema generator
 const settings: TJS.PartialArgs = {
 	required: true,
+	noExtraProps: true,
 };
 
 // optionally pass ts compiler options
@@ -26,7 +27,11 @@ const files = fs.readdirSync(jsonSchemaPath);
 for (const file of files) {
 	fs.unlinkSync(`${jsonSchemaPath}/${file}`);
 }
-for (const className of ["DeckApi", "DeckApi_WithoutCards"]) {
+for (const className of [
+	"DeckApi",
+	"DeckApi_WithoutCards",
+	"DeckApi_Createable",
+]) {
 	const schema = TJS.generateSchema(program, className, settings);
 	console.log("gboDebug:[schema]", schema);
 	if (schema) {

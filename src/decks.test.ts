@@ -15,7 +15,8 @@ import {
 	DeckApi,
 	DeckApi_WithoutCards,
 	DeckApi_Createable,
-} from "./routes/type";
+	CardApi_Createable,
+} from "./type";
 
 let firstDeck: deck & {
 	cards: card[];
@@ -138,45 +139,36 @@ describe("DECKS", () => {
 		expect(response.status).toBe(200);
 
 		parseDates(responseBody);
-		expect(responseBody).toEqual(
-			expect.objectContaining<DeckApi_WithoutCards>({
+		expect(responseBody).toEqual<DeckApi>(
+			expect.objectContaining({
 				languageTag: "FR",
 				name: "first-deck",
 				createdAt: expect.any(Date),
 				updatedAt: expect.any(Date),
 				id: expect.any(Number),
+				cards: expect.any(Array),
 			})
 		);
-		parseDates(responseBody.cards[0]);
 		expect(responseBody.cards[0]).toEqual(
-			expect.objectContaining<CardApi>({
+			expect.objectContaining<CardApi_Createable>({
 				from: "0:01:00",
 				to: "0:01:30",
 				positionX: 1,
 				positionY: 1,
 				text: "firstDeck:card1",
-				createdAt: expect.any(Date),
-				updatedAt: expect.any(Date),
-				id: expect.any(Number),
 			})
 		);
-		expect(responseBody.cards[0]).not.toEqual(
-			expect.objectContaining({
-				deckId: expect.anything(),
-				deckOrder: expect.anything(),
-			})
-		);
-		parseDates(response.body.cards[1]);
+		expect((responseBody.cards[0] as any).deckOrder).toBeFalsy();
+		expect((responseBody.cards[0] as any).deckId).toBeFalsy();
+		expect((responseBody.cards[0] as any).createdAt).toBeFalsy();
+		expect((responseBody.cards[0] as any).updatedAt).toBeFalsy();
 		expect(response.body.cards[1]).toEqual(
-			expect.objectContaining<CardApi>({
+			expect.objectContaining<CardApi_Createable>({
 				from: "0:02:00",
 				to: "0:02:30",
 				positionX: 2,
 				positionY: 2,
 				text: "firstDeck:card2",
-				createdAt: expect.any(Date),
-				updatedAt: expect.any(Date),
-				id: expect.any(Number),
 			})
 		);
 		expect(responseBody.cards[1]).not.toEqual(
@@ -222,12 +214,14 @@ describe("DECKS", () => {
 			})
 		);
 		expect(responseBody.cards.length).toBe(2);
+		expect((responseBody.cards[0] as any).createdAt).toBeFalsy();
 		expect(responseBody.cards[0].text).toBe("first new card");
 		expect(responseBody.cards[1].text).toBe("second new card");
 	});
 	test("It should PUT a deck", async () => {
-		const jsonInput = {
+		const jsonInput: DeckApi = {
 			name: "first-deck-updated",
+			languageTag: null,
 			cards: [
 				{
 					from: "0:12:1",
@@ -237,7 +231,6 @@ describe("DECKS", () => {
 					text: "first new card",
 				},
 				{
-					id: firstDeck.cards[0].id,
 					from: "0:22:1",
 					to: "0:22:2",
 					positionX: 61,
@@ -245,7 +238,10 @@ describe("DECKS", () => {
 					text: "firstDeck:card1:became:2",
 				},
 			],
-		} as DeckApi;
+			createdAt: new Date(-1),
+			updatedAt: new Date(-1),
+			id: -1,
+		};
 
 		const response = await request(app)
 			.put(`/decks/${firstDeck.id}`)
@@ -276,7 +272,6 @@ describe("DECKS", () => {
 		expect(responseBody.name).toBe("first-deck-updated");
 		expect(responseBody.cards.length).toBe(2);
 		expect(responseBody.cards[0].text).toBe("first new card");
-		expect(responseBody.cards[0].id).toEqual(expect.any(Number));
 		expect(responseBody.cards[1].text).toBe("firstDeck:card1:became:2");
 		expect(
 			prisma.card.findUnique({
