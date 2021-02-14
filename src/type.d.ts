@@ -1,6 +1,14 @@
 import { card, deck } from "@prisma/client";
 
-type CardApi = Omit<card, "deckOrder" | "deckId">;
+type CardApi = Omit<
+	card,
+	"deckOrder" | "deckId" | "positionX" | "positionY"
+> & {
+	position: {
+		x: number;
+		y: number;
+	};
+};
 type CardApi_Createable = CreateFields<CardApi>;
 type DeckApi = deck & {
 	cards: CardApi_Createable[];

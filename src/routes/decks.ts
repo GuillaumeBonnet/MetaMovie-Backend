@@ -10,7 +10,7 @@ const routerDecks = express.Router();
 import { NextFunction, Request, Response } from "express";
 import logger from "morgan";
 import prisma from "../prisma-instance";
-import { getIdFromUrl } from "./decksUtils";
+import { deckToApiFormat, getIdFromUrl } from "./decksUtils";
 import {
 	CardApi,
 	DeckApi,
@@ -63,8 +63,7 @@ routerDecks.get(
 			if (!deck) {
 				next("Deck not found.");
 			} else {
-				const deckOut: DeckApi = deck;
-				res.send(deckOut);
+				res.send(deckToApiFormat(deck));
 			}
 		} catch (error) {
 			next(error);
@@ -83,10 +82,15 @@ routerDecks.post(
 					name: body.name,
 					languageTag: body.languageTag ?? "EN",
 					cards: {
-						create: body.cards.map((card: any, index) => {
-							card.deckOrder = index;
-							delete card.status;
-							return card;
+						create: body.cards.map((card, index) => {
+							return {
+								deckOrder: index,
+								from: card.from,
+								to: card.to,
+								positionX: card.position.x,
+								positionY: card.position.y,
+								text: card.text,
+							};
 						}),
 					},
 				},
@@ -105,8 +109,7 @@ routerDecks.post(
 					},
 				},
 			});
-			const deckOut: DeckApi = deck;
-			res.send(deckOut);
+			res.send(deckToApiFormat(deck));
 		} catch (error) {
 			next(error);
 		}
@@ -137,8 +140,8 @@ routerDecks.put(
 						const cardCasted: Prisma.cardCreateWithoutDeckInput = {
 							from: card.from,
 							to: card.to,
-							positionX: card.positionX,
-							positionY: card.positionY,
+							positionX: card.position.x,
+							positionY: card.position.y,
 							text: card.text,
 							deckOrder: index,
 						};
@@ -162,13 +165,14 @@ routerDecks.put(
 			},
 		});
 		try {
+			console.log("gboDebug: before update");
 			const [
 				deleteOp_result,
 				updateOp_result,
 			] = await prisma.$transaction([deleteOp, updateOp]);
+			console.log("gboDebug:[deleteOp_result]", deleteOp_result);
 			console.log("gboDebug:[updateOp_result]", updateOp_result);
-			const deckOut: DeckApi = updateOp_result;
-			res.send(deckOut);
+			res.send(deckToApiFormat(updateOp_result));
 		} catch (error) {
 			console.log("gboDebug:[error]", error);
 			next(error);

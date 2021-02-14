@@ -33,7 +33,6 @@ for (const className of [
 	"DeckApi_Createable",
 ]) {
 	const schema = TJS.generateSchema(program, className, settings);
-	console.log("gboDebug:[schema]", schema);
 	if (schema) {
 		fs.writeFileSync(
 			`${jsonSchemaPath}/${className}.schema.json`,

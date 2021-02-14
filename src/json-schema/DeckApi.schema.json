@@ -27,7 +27,7 @@
         "cards": {
             "type": "array",
             "items": {
-                "$ref": "#/definitions/Pick<Pick<card,\"text\"|\"id\"|\"createdAt\"|\"updatedAt\"|\"from\"|\"to\"|\"positionX\"|\"positionY\">,\"text\"|\"from\"|\"to\"|\"positionX\"|\"positionY\">"
+                "$ref": "#/definitions/Pick<CardApi,\"text\"|\"from\"|\"to\"|\"position\">"
             }
         }
     },
@@ -40,7 +40,7 @@
         "updatedAt"
     ],
     "definitions": {
-        "Pick<Pick<card,\"text\"|\"id\"|\"createdAt\"|\"updatedAt\"|\"from\"|\"to\"|\"positionX\"|\"positionY\">,\"text\"|\"from\"|\"to\"|\"positionX\"|\"positionY\">": {
+        "Pick<CardApi,\"text\"|\"from\"|\"to\"|\"position\">": {
             "description": "From T, pick a set of properties whose keys are in the union K",
             "type": "object",
             "properties": {
@@ -53,18 +53,27 @@
                 "to": {
                     "type": "string"
                 },
-                "positionX": {
-                    "type": "number"
-                },
-                "positionY": {
-                    "type": "number"
+                "position": {
+                    "type": "object",
+                    "properties": {
+                        "x": {
+                            "type": "number"
+                        },
+                        "y": {
+                            "type": "number"
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "x",
+                        "y"
+                    ]
                 }
             },
             "additionalProperties": false,
             "required": [
                 "from",
-                "positionX",
-                "positionY",
+                "position",
                 "text",
                 "to"
             ]

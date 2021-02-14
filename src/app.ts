@@ -7,8 +7,10 @@ import { routerIndex } from "./routes/index";
 import { routerDecks } from "./routes/decks";
 import { deck } from "../node_modules/.prisma/client/index";
 import { ValidationError } from "express-json-validator-middleware";
-
+import cors from "cors";
 const app = express();
+cors;
+app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

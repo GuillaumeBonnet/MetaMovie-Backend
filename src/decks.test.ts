@@ -153,8 +153,10 @@ describe("DECKS", () => {
 			expect.objectContaining<CardApi_Createable>({
 				from: "0:01:00",
 				to: "0:01:30",
-				positionX: 1,
-				positionY: 1,
+				position: {
+					x: 1,
+					y: 1,
+				},
 				text: "firstDeck:card1",
 			})
 		);
@@ -166,8 +168,7 @@ describe("DECKS", () => {
 			expect.objectContaining<CardApi_Createable>({
 				from: "0:02:00",
 				to: "0:02:30",
-				positionX: 2,
-				positionY: 2,
+				position: { x: 2, y: 2 },
 				text: "firstDeck:card2",
 			})
 		);
@@ -186,21 +187,26 @@ describe("DECKS", () => {
 				{
 					from: "0:12:1",
 					to: "0:12:2",
-					positionX: 51,
-					positionY: 52,
+					position: {
+						x: 51,
+						y: 52,
+					},
 					text: "first new card",
 				},
 				{
 					from: "0:22:1",
 					to: "0:22:2",
-					positionX: 61,
-					positionY: 62,
+					position: {
+						x: 61,
+						y: 62,
+					},
 					text: "second new card",
 				},
 			],
 		};
 
 		const response = await request(app).post("/decks").send(requestBody);
+		console.log("gboDebug:[responseBody1]", response.body);
 		expect(response.status).toBe(200);
 		const responseBody = response.body as DeckApi;
 		parseDates(response.body);
@@ -226,15 +232,19 @@ describe("DECKS", () => {
 				{
 					from: "0:12:1",
 					to: "0:12:2",
-					positionX: 51,
-					positionY: 52,
+					position: {
+						x: 51,
+						y: 52,
+					},
 					text: "first new card",
 				},
 				{
 					from: "0:22:1",
 					to: "0:22:2",
-					positionX: 61,
-					positionY: 62,
+					position: {
+						x: 61,
+						y: 62,
+					},
 					text: "firstDeck:card1:became:2",
 				},
 			],
