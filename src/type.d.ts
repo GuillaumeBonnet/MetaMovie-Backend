@@ -11,7 +11,7 @@ type CardApi = Omit<
 };
 type CardApi_Createable = CreateFields<CardApi>;
 type DeckApi = deck & {
-	cards: CardApi_Createable[];
+	cards: Omit<CardApi, "updatedAt" | "createdAt">[];
 };
 type DeckApi_WithoutCards = deck;
 type DeckApi_Createable = CreateFields<deck> & { cards: CardApi_Createable[] };

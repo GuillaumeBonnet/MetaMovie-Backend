@@ -25,6 +25,7 @@ const deckToApiFormat = (
 			from: string;
 			text: string;
 			to: string;
+			id: number;
 		}[];
 	}
 ) => {
@@ -39,6 +40,7 @@ const deckToApiFormat = (
 						x: card.positionX,
 						y: card.positionY,
 					},
+					id: card.id,
 				};
 			}),
 			createdAt: deck.createdAt,

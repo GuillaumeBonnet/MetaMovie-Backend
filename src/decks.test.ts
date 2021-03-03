@@ -89,16 +89,16 @@ describe("DECKS", () => {
 					create: [
 						{
 							deckOrder: 1,
-							from: "02:01:00",
-							to: "02:01:30",
+							from: "2:01:00",
+							to: "2:01:30",
 							positionX: 21,
 							positionY: 21,
 							text: "secondDeck:card1",
 						},
 						{
 							deckOrder: 2,
-							from: "02:02:00",
-							to: "02:02:30",
+							from: "2:02:00",
+							to: "2:02:30",
 							positionX: 22,
 							positionY: 22,
 							text: "secondDeck:card2",
@@ -185,8 +185,8 @@ describe("DECKS", () => {
 			name: "my new deck",
 			cards: [
 				{
-					from: "0:12:1",
-					to: "0:12:2",
+					from: "0:12:01",
+					to: "0:12:02",
 					position: {
 						x: 51,
 						y: 52,
@@ -194,8 +194,8 @@ describe("DECKS", () => {
 					text: "first new card",
 				},
 				{
-					from: "0:22:1",
-					to: "0:22:2",
+					from: "0:22:01",
+					to: "0:22:02",
 					position: {
 						x: 61,
 						y: 62,
@@ -230,21 +230,23 @@ describe("DECKS", () => {
 			languageTag: null,
 			cards: [
 				{
-					from: "0:12:1",
-					to: "0:12:2",
+					from: "0:12:01",
+					to: "0:12:02",
 					position: {
 						x: 51,
 						y: 52,
 					},
+					id: -1,
 					text: "first new card",
 				},
 				{
-					from: "0:22:1",
-					to: "0:22:2",
+					from: "0:22:01",
+					to: "0:22:02",
 					position: {
 						x: 61,
 						y: 62,
 					},
+					id: -1,
 					text: "firstDeck:card1:became:2",
 				},
 			],

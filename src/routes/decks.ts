@@ -53,6 +53,7 @@ routerDecks.get(
 							positionX: true,
 							positionY: true,
 							text: true,
+							id: true,
 						},
 						orderBy: {
 							deckOrder: "asc",
@@ -102,6 +103,7 @@ routerDecks.post(
 							positionX: true,
 							positionY: true,
 							text: true,
+							id: true,
 						},
 						orderBy: {
 							deckOrder: "asc",
@@ -157,6 +159,7 @@ routerDecks.put(
 						positionX: true,
 						positionY: true,
 						text: true,
+						id: true,
 					},
 					orderBy: {
 						deckOrder: "asc",
