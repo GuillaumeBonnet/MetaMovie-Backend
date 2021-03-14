@@ -6,7 +6,6 @@ import fs from "fs";
 // optionally pass argument to schema generator
 const settings: TJS.PartialArgs = {
 	required: true,
-	noExtraProps: true,
 };
 
 // optionally pass ts compiler options

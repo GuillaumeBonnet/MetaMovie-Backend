@@ -1,75 +1,96 @@
 {
-	"additionalProperties": false,
-	"type": "object",
-	"properties": {
-		"id": {
-			"type": "number"
-		},
-		"createdAt": {
-			"description": "Enables basic storage and retrieval of dates and times.",
-			"type": "string",
-			"format": "date-time"
-		},
-		"updatedAt": {
-			"description": "Enables basic storage and retrieval of dates and times.",
-			"type": "string",
-			"format": "date-time"
-		},
-		"languageTag": {
-			"type": ["null", "string"]
-		},
-		"name": {
-			"type": "string"
-		},
-		"cards": {
-			"type": "array",
-			"items": {
-				"$ref": "#/definitions/Pick<CardApi,\"text\"|\"id\"|\"from\"|\"to\"|\"position\">"
-			}
-		}
-	},
-	"required": [
-		"cards",
-		"createdAt",
-		"id",
-		"languageTag",
-		"name",
-		"updatedAt"
-	],
-	"definitions": {
-		"Pick<CardApi,\"text\"|\"id\"|\"from\"|\"to\"|\"position\">": {
-			"description": "From T, pick a set of properties whose keys are in the union K",
-			"type": "object",
-			"properties": {
-				"text": {
-					"type": "string"
-				},
-				"id": {
-					"type": "number"
-				},
-				"from": {
-					"type": "string"
-				},
-				"to": {
-					"type": "string"
-				},
-				"position": {
-					"type": "object",
-					"properties": {
-						"x": {
-							"type": "number"
-						},
-						"y": {
-							"type": "number"
-						}
-					},
-					"additionalProperties": false,
-					"required": ["x", "y"]
-				}
-			},
-			"additionalProperties": false,
-			"required": ["from", "id", "position", "text", "to"]
-		}
-	},
-	"$schema": "http://json-schema.org/draft-07/schema#"
+    "allOf": [
+        {
+            "description": "Model deck",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "number"
+                },
+                "createdAt": {
+                    "description": "Enables basic storage and retrieval of dates and times.",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "updatedAt": {
+                    "description": "Enables basic storage and retrieval of dates and times.",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "languageTag": {
+                    "type": [
+                        "null",
+                        "string"
+                    ]
+                },
+                "name": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "createdAt",
+                "id",
+                "languageTag",
+                "name",
+                "updatedAt"
+            ]
+        },
+        {
+            "type": "object",
+            "properties": {
+                "cards": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Pick<CardApi,\"text\"|\"id\"|\"from\"|\"to\"|\"position\">"
+                    }
+                }
+            },
+            "required": [
+                "cards"
+            ]
+        }
+    ],
+    "definitions": {
+        "Pick<CardApi,\"text\"|\"id\"|\"from\"|\"to\"|\"position\">": {
+            "description": "From T, pick a set of properties whose keys are in the union K",
+            "type": "object",
+            "properties": {
+                "text": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "number"
+                },
+                "from": {
+                    "type": "string"
+                },
+                "to": {
+                    "type": "string"
+                },
+                "position": {
+                    "type": "object",
+                    "properties": {
+                        "x": {
+                            "type": "number"
+                        },
+                        "y": {
+                            "type": "number"
+                        }
+                    },
+                    "required": [
+                        "x",
+                        "y"
+                    ]
+                }
+            },
+            "required": [
+                "from",
+                "id",
+                "position",
+                "text",
+                "to"
+            ]
+        }
+    },
+    "$schema": "http://json-schema.org/draft-07/schema#"
 }

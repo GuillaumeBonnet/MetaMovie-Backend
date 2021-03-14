@@ -1,29 +1,43 @@
 {
-    "additionalProperties": false,
-    "type": "object",
-    "properties": {
-        "languageTag": {
-            "type": [
-                "null",
-                "string"
+    "allOf": [
+        {
+            "$ref": "#/definitions/Pick<deck,\"languageTag\"|\"name\">"
+        },
+        {
+            "type": "object",
+            "properties": {
+                "cards": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Pick<CardApi,\"text\"|\"from\"|\"to\"|\"position\">"
+                    }
+                }
+            },
+            "required": [
+                "cards"
             ]
-        },
-        "name": {
-            "type": "string"
-        },
-        "cards": {
-            "type": "array",
-            "items": {
-                "$ref": "#/definitions/Pick<CardApi,\"text\"|\"from\"|\"to\"|\"position\">"
-            }
         }
-    },
-    "required": [
-        "cards",
-        "languageTag",
-        "name"
     ],
     "definitions": {
+        "Pick<deck,\"languageTag\"|\"name\">": {
+            "description": "From T, pick a set of properties whose keys are in the union K",
+            "type": "object",
+            "properties": {
+                "languageTag": {
+                    "type": [
+                        "null",
+                        "string"
+                    ]
+                },
+                "name": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "languageTag",
+                "name"
+            ]
+        },
         "Pick<CardApi,\"text\"|\"from\"|\"to\"|\"position\">": {
             "description": "From T, pick a set of properties whose keys are in the union K",
             "type": "object",
@@ -47,14 +61,12 @@
                             "type": "number"
                         }
                     },
-                    "additionalProperties": false,
                     "required": [
                         "x",
                         "y"
                     ]
                 }
             },
-            "additionalProperties": false,
             "required": [
                 "from",
                 "position",
