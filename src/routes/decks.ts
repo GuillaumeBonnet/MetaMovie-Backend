@@ -183,4 +183,39 @@ routerDecks.put(
 	}
 );
 
+routerDecks.delete(
+	"/:deckId",
+	async function (req: Request, res: Response, next: NextFunction) {
+		const deckId = getIdFromUrl("deckId", req, res, next);
+		const deleteCardsOp = prisma.card.deleteMany({
+			where: {
+				deckId: {
+					equals: deckId,
+				},
+			},
+		});
+		const deleteOp = prisma.deck.delete({
+			where: {
+				id: deckId,
+			},
+		});
+		try {
+			console.log("gboDebug: before delete");
+			const [
+				deleteCardsOp_result,
+				deleteOp_result,
+			] = await prisma.$transaction([deleteCardsOp, deleteOp]);
+			console.log(
+				"gboDebug:[deleteCardsOp_result]",
+				deleteCardsOp_result
+			);
+			console.log("gboDebug:[deleteOp_result]", deleteOp_result);
+			res.send();
+		} catch (error) {
+			console.log("gboDebug:[error]", error);
+			next(error);
+		}
+	}
+);
+
 export { routerDecks };
