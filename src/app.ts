@@ -1,24 +1,51 @@
 import express, { NextFunction, Request, Response } from "express";
 import path from "path";
-import cookieParser from "cookie-parser";
 import logger from "morgan";
-
 import { routerIndex } from "./routes/index";
-import { routerDecks } from "./routes/decks";
+import { pathDecks, routerDecks } from "./routes/decks";
+import { passport, pathUsers, routerUsers } from "./routes/users";
 import { deck } from "../node_modules/.prisma/client/index";
 import { ValidationError } from "express-json-validator-middleware";
 import cors from "cors";
+import cookieSession from "cookie-session";
+import prisma from "./prisma-instance";
+import { user } from "@prisma/client";
+
 const app = express();
-cors;
-app.use(cors());
+app.use(
+	cors({
+		//To allow requests from client
+		origin: ["https://localhost:8080", "https://www.netflix.com"],
+		credentials: true,
+	})
+); //TODO CORS
 app.use(logger("dev"));
+app.use(
+	cookieSession({
+		name: "auth-meta-movie",
+		keys: ["aa"], //TODO
+		maxAge: 24 * 60 * 60 * 1000 * 7, // 1 week
+		sameSite: "none",
+		secure: true,
+	})
+);
+
+// app.use(function (req: Request, res: Response, next: NextFunction) {
+// 	if (req.session) {
+// 		req.session.views = (req.session.views || 0) + 1;
+// 		// req.session.userId = -1;
+// 	}
+// 	next();
+// });
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use("/", routerIndex);
-app.use("/decks", routerDecks);
+app.use(pathUsers, routerUsers);
+app.use(pathDecks, routerDecks);
 // Error handler for validation errors
 app.use(function (err: Error, req: Request, res: Response, next: NextFunction) {
 	if (err instanceof ValidationError) {

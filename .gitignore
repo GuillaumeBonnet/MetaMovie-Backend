@@ -55,6 +55,8 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
+*.env
 #ts build output
 build
+#certs
+*.pem

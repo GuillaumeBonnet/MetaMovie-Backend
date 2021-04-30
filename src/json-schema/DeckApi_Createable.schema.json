@@ -1,7 +1,7 @@
 {
     "allOf": [
         {
-            "$ref": "#/definitions/Pick<deck,\"languageTag\"|\"name\">"
+            "$ref": "#/definitions/Pick<deck,\"languageTag\"|\"name\"|\"userId\">"
         },
         {
             "type": "object",
@@ -19,7 +19,7 @@
         }
     ],
     "definitions": {
-        "Pick<deck,\"languageTag\"|\"name\">": {
+        "Pick<deck,\"languageTag\"|\"name\"|\"userId\">": {
             "description": "From T, pick a set of properties whose keys are in the union K",
             "type": "object",
             "properties": {
@@ -31,11 +31,18 @@
                 },
                 "name": {
                     "type": "string"
+                },
+                "userId": {
+                    "type": [
+                        "null",
+                        "number"
+                    ]
                 }
             },
             "required": [
                 "languageTag",
-                "name"
+                "name",
+                "userId"
             ]
         },
         "Pick<CardApi,\"text\"|\"from\"|\"to\"|\"position\">": {

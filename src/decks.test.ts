@@ -34,81 +34,81 @@ const parseDates = (obj: {
 };
 describe("DECKS", () => {
 	beforeEach(async () => {
-		if (process.env.NODE_ENV == "production") {
-			throw Error("Don't run integration tests on production database.");
-		}
-		await prisma.card.deleteMany({
-			where: {
-				id: {
-					not: undefined,
-				},
-			},
-		});
-		await prisma.deck.deleteMany({
-			where: {
-				id: {
-					not: undefined,
-				},
-			},
-		});
-		firstDeck = await prisma.deck.create({
-			data: {
-				name: "first-deck",
-				languageTag: "FR",
-				cards: {
-					create: [
-						{
-							deckOrder: 1,
-							from: "0:01:00",
-							to: "0:01:30",
-							positionX: 1,
-							positionY: 1,
-							text: "firstDeck:card1",
-						},
-						{
-							deckOrder: 2,
-							from: "0:02:00",
-							to: "0:02:30",
-							positionX: 2,
-							positionY: 2,
-							text: "firstDeck:card2",
-						},
-					],
-				},
-			},
-			include: {
-				cards: true,
-			},
-		});
+		// if (process.env.NODE_ENV == "production") {
+		// 	throw Error("Don't run integration tests on production database.");
+		// }
+		// await prisma.card.deleteMany({
+		// 	where: {
+		// 		id: {
+		// 			not: undefined,
+		// 		},
+		// 	},
+		// });
+		// await prisma.deck.deleteMany({
+		// 	where: {
+		// 		id: {
+		// 			not: undefined,
+		// 		},
+		// 	},
+		// });
+		// firstDeck = await prisma.deck.create({
+		// 	data: {
+		// 		name: "first-deck",
+		// 		languageTag: "FR",
+		// 		cards: {
+		// 			create: [
+		// 				{
+		// 					deckOrder: 1,
+		// 					from: "0:01:00",
+		// 					to: "0:01:30",
+		// 					positionX: 1,
+		// 					positionY: 1,
+		// 					text: "firstDeck:card1",
+		// 				},
+		// 				{
+		// 					deckOrder: 2,
+		// 					from: "0:02:00",
+		// 					to: "0:02:30",
+		// 					positionX: 2,
+		// 					positionY: 2,
+		// 					text: "firstDeck:card2",
+		// 				},
+		// 			],
+		// 		},
+		// 	},
+		// 	include: {
+		// 		cards: true,
+		// 	},
+		// });
 
-		secondDeck = await prisma.deck.create({
-			data: {
-				name: "second-deck",
-				languageTag: "EN",
-				cards: {
-					create: [
-						{
-							deckOrder: 1,
-							from: "2:01:00",
-							to: "2:01:30",
-							positionX: 21,
-							positionY: 21,
-							text: "secondDeck:card1",
-						},
-						{
-							deckOrder: 2,
-							from: "2:02:00",
-							to: "2:02:30",
-							positionX: 22,
-							positionY: 22,
-							text: "secondDeck:card2",
-						},
-					],
-				},
-			},
-			include: {
-				cards: true,
-			},
+		// secondDeck = await prisma.deck.create({
+		// 	data: {
+		// 		name: "second-deck",
+		// 		languageTag: "EN",
+		// 		cards: {
+		// 			create: [
+		// 				{
+		// 					deckOrder: 1,
+		// 					from: "2:01:00",
+		// 					to: "2:01:30",
+		// 					positionX: 21,
+		// 					positionY: 21,
+		// 					text: "secondDeck:card1",
+		// 				},
+		// 				{
+		// 					deckOrder: 2,
+		// 					from: "2:02:00",
+		// 					to: "2:02:30",
+		// 					positionX: 22,
+		// 					positionY: 22,
+		// 					text: "secondDeck:card2",
+		// 				},
+		// 			],
+		// 		},
+		// 	},
+		// 	include: {
+		// 		cards: true,
+		// 	},
 		});
 	});
 	afterAll(() => {

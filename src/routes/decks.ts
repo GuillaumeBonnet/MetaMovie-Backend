@@ -6,7 +6,6 @@ import {
 	PrismaClientKnownRequestError,
 } from "@prisma/client";
 import express from "express";
-const routerDecks = express.Router();
 import { NextFunction, Request, Response } from "express";
 import logger from "morgan";
 import prisma from "../prisma-instance";
@@ -20,6 +19,9 @@ import {
 	CardApi_Createable,
 } from "../type";
 import { bodyValidator } from "./bodyValidator";
+
+const routerDecks = express.Router();
+const pathDecks = "/decks";
 
 routerDecks.get(
 	"/",
@@ -218,4 +220,4 @@ routerDecks.delete(
 	}
 );
 
-export { routerDecks };
+export { routerDecks, pathDecks };

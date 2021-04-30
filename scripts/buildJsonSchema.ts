@@ -30,6 +30,7 @@ for (const className of [
 	"DeckApi",
 	"DeckApi_WithoutCards",
 	"DeckApi_Createable",
+	"SignupBody",
 ]) {
 	const schema = TJS.generateSchema(program, className, settings);
 	if (schema) {
