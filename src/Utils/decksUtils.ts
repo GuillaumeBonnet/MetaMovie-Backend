@@ -1,5 +1,6 @@
 import { card, Decimal, deck } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
+import { getDeckPermissions, Role } from "../Services/Permissions";
 import { CardApi, DeckApi, DeckApi_WithoutCards } from "../type";
 
 const getIdFromUrl = (
@@ -27,10 +28,13 @@ const deckToApiFormat = (
 			to: string;
 			id: number;
 		}[];
-	}
+		userId: number;
+	},
+	userId: number
 ) => {
 	if (deck.cards) {
 		const deckApi: DeckApi = {
+			permissions: getDeckPermissions(deck, userId),
 			cards: deck.cards.map((card) => {
 				return {
 					from: card.from,
@@ -52,6 +56,7 @@ const deckToApiFormat = (
 		return deckApi;
 	} else {
 		const deckApi: DeckApi_WithoutCards = {
+			permissions: getDeckPermissions(deck, userId),
 			createdAt: deck.createdAt,
 			updatedAt: deck.updatedAt,
 			id: deck.id,

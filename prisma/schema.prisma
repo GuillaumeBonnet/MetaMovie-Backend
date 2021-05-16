@@ -28,8 +28,8 @@ model deck {
   languageTag String?  @map("language_tag")
   name        String
   cards       card[]
-  user        user?    @relation(fields: [userId], references: [id])
-  userId      Int?
+  user        user     @relation(fields: [userId], references: [id])
+  userId      Int
 }
 
 model user {

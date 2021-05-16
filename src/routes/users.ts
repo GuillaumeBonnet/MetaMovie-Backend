@@ -10,7 +10,7 @@ import express from "express";
 import { NextFunction, Request, Response } from "express";
 import logger from "morgan";
 import prisma from "../prisma-instance";
-import { deckToApiFormat, getIdFromUrl } from "./decksUtils";
+import { deckToApiFormat, getIdFromUrl } from "../Utils/decksUtils";
 import {
 	CardApi,
 	DeckApi,
@@ -21,11 +21,11 @@ import {
 	SignupBody,
 	UserInfo,
 } from "../type";
-import { bodyValidator } from "./bodyValidator";
+import { bodyValidator } from "../Services/bodyValidator";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { send } from "process";
-import { fetchUser, isUserLogged } from "./userUtils";
+import { fetchUser, fetchUserInfo, isUserLogged } from "../Utils/userUtils";
 const routerUsers = express.Router();
 const pathUsers = "/users";
 
@@ -112,7 +112,7 @@ routerUsers.get("/info", async function (req, res, next) {
 		return res.sendStatus(400);
 	}
 	try {
-		const userInfo = await fetchUser(req.session?.userId);
+		const userInfo = await fetchUserInfo(req.session?.userId);
 		return res.send(userInfo);
 	} catch (err) {
 		return next(err);
@@ -121,7 +121,7 @@ routerUsers.get("/info", async function (req, res, next) {
 routerUsers.post("/login", async function (req, res, next) {
 	if (isUserLogged(req)) {
 		try {
-			const userInfo = await fetchUser(req.session?.userId);
+			const userInfo = await fetchUserInfo(req.session?.userId);
 			return res.send(userInfo);
 		} catch (err) {
 			return next(err);
@@ -140,7 +140,7 @@ routerUsers.post("/login", async function (req, res, next) {
 			}
 			return next("Error");
 		}
-		req.logIn(user, function (err) {
+		req.logIn(user, async function (err) {
 			if (err) {
 				return next(err);
 			}
@@ -148,9 +148,7 @@ routerUsers.post("/login", async function (req, res, next) {
 			req.session = {
 				userId: user.id,
 			};
-			const userInfo: UserInfo = {
-				username: user.username,
-			};
+			const userInfo = await fetchUserInfo(req.session?.userId);
 			return res.send(userInfo);
 		});
 	})(req, res, next);

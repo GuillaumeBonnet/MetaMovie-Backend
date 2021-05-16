@@ -23,8 +23,8 @@ app.set("port", port);
 
 const options = {
 	// todo async
-	key: fs.readFileSync("./key.pem"),
-	cert: fs.readFileSync("./cert.pem"),
+	key: fs.readFileSync("src/bin/certs/localhost.key"),
+	cert: fs.readFileSync("src/bin/certs/localhost.crt"),
 };
 var server = https.createServer(options, app);
 

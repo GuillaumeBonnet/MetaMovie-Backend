@@ -12,14 +12,27 @@ const fetchUser = async (userId: number) => {
 		},
 		select: {
 			username: true,
+			id: true,
 		},
 	});
 	if (!user) {
 		throw new Error("User not found");
 	}
+	return user;
+};
+const fetchUserInfo = async (userId: number) => {
+	const user = {
+		username: (await fetchUser(userId)).username,
+	};
 	const userInfo: UserInfo = {
 		username: user.username,
+		permissions: [
+			"CREATE_DECKS",
+			"DELETE_OWN_DECKS",
+			"EDIT_OWN_DECKS",
+			"READ_DECKS",
+		],
 	};
 	return userInfo;
 };
-export { isUserLogged, fetchUser };
+export { isUserLogged, fetchUser, fetchUserInfo };

@@ -59,4 +59,7 @@ typings/
 #ts build output
 build
 #certs
-*.pem
+src/bin/certs/
+
+#IDE
+.vscode/
