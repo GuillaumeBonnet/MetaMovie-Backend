@@ -17,12 +17,12 @@ type CardApi = Omit<
 	};
 };
 type CardApi_Createable = CreateFields<CardApi>;
-type DeckApi = Omit<deck, "userId"> & {
-	cards: Omit<CardApi, "updatedAt" | "createdAt">[];
-	permissions: ObjectPermission[];
-};
 type DeckApi_WithoutCards = Omit<deck, "userId"> & {
 	permissions: ObjectPermission[];
+	numberOfCards: number;
+};
+type DeckApi = Omit<DeckApi_WithoutCards, "numberOfCards"> & {
+	cards: Omit<CardApi, "updatedAt" | "createdAt">[];
 };
 type DeckApi_Createable = CreateFields<deck> & { cards: CardApi_Createable[] };
 // type DeckApi_Update = CreateFields<deck> & { cards: CardApi_Createable[] };

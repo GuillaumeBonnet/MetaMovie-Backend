@@ -1,4 +1,4 @@
-import { card, Decimal, deck } from "@prisma/client";
+import { card, deck } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import { getDeckPermissions, Role } from "../Services/Permissions";
 import { CardApi, DeckApi, DeckApi_WithoutCards } from "../type";
@@ -20,50 +20,47 @@ const getIdFromUrl = (
 
 const deckToApiFormat = (
 	deck: deck & {
-		cards?: {
-			positionX: number;
-			positionY: number;
-			from: string;
-			text: string;
-			to: string;
-			id: number;
-		}[];
-		userId: number;
+		cards: card[];
 	},
 	userId: number
 ) => {
-	if (deck.cards) {
-		const deckApi: DeckApi = {
-			permissions: getDeckPermissions(deck, userId),
-			cards: deck.cards.map((card) => {
-				return {
-					from: card.from,
-					to: card.to,
-					text: card.text,
-					position: {
-						x: card.positionX,
-						y: card.positionY,
-					},
-					id: card.id,
-				};
-			}),
-			createdAt: deck.createdAt,
-			updatedAt: deck.updatedAt,
-			id: deck.id,
-			languageTag: deck.languageTag,
-			name: deck.name,
-		};
-		return deckApi;
-	} else {
-		const deckApi: DeckApi_WithoutCards = {
-			permissions: getDeckPermissions(deck, userId),
-			createdAt: deck.createdAt,
-			updatedAt: deck.updatedAt,
-			id: deck.id,
-			languageTag: deck.languageTag,
-			name: deck.name,
-		};
-		return deckApi;
-	}
+	const deckApi: DeckApi = {
+		permissions: getDeckPermissions(deck, userId),
+		cards: deck.cards.map((card) => {
+			return {
+				from: card.from,
+				to: card.to,
+				text: card.text,
+				position: {
+					x: card.positionX,
+					y: card.positionY,
+				},
+				id: card.id,
+			};
+		}),
+		createdAt: deck.createdAt,
+		updatedAt: deck.updatedAt,
+		id: deck.id,
+		languageTag: deck.languageTag,
+		name: deck.name,
+	};
+	return deckApi;
 };
-export { getIdFromUrl, deckToApiFormat };
+const deckWithoutCardsToApiFormat = (
+	deck: deck & {
+		numberOfCards: number;
+	},
+	userId: number
+) => {
+	const deckApi: DeckApi_WithoutCards = {
+		permissions: getDeckPermissions(deck, userId),
+		createdAt: deck.createdAt,
+		updatedAt: deck.updatedAt,
+		id: deck.id,
+		languageTag: deck.languageTag,
+		name: deck.name,
+		numberOfCards: deck.numberOfCards,
+	};
+	return deckApi;
+};
+export { getIdFromUrl, deckToApiFormat, deckWithoutCardsToApiFormat };

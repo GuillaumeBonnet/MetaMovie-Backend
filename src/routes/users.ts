@@ -1,11 +1,4 @@
-import {
-	card,
-	deck,
-	FindManycardArgs,
-	Prisma,
-	PrismaClientKnownRequestError,
-	user,
-} from "@prisma/client";
+import { card, deck, Prisma, user } from "@prisma/client";
 import express from "express";
 import { NextFunction, Request, Response } from "express";
 import logger from "morgan";

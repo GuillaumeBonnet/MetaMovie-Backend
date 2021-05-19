@@ -1,10 +1,4 @@
-import {
-	card,
-	deck,
-	FindManycardArgs,
-	Prisma,
-	PrismaClientKnownRequestError,
-} from "@prisma/client";
+import { card, deck, Prisma } from "@prisma/client";
 import express from "express";
 import { NextFunction, Request, Response } from "express";
 import logger from "morgan";
@@ -40,11 +34,26 @@ routerDecks.get(
 		}
 		try {
 			const allDecks: DeckApi_WithoutCards[] = (
-				await prisma.deck.findMany()
+				await prisma.deck.findMany({
+					select: {
+						_count: {
+							select: {
+								cards: true,
+							},
+						},
+						userId: true,
+						id: true,
+						createdAt: true,
+						updatedAt: true,
+						languageTag: true,
+						name: true,
+					},
+				})
 			).map((deck) => {
 				return {
 					...deck,
 					permissions: getDeckPermissions(deck, req.session?.userId),
+					numberOfCards: deck._count?.cards || 0,
 				};
 			});
 			res.send(allDecks);
@@ -80,6 +89,10 @@ routerDecks.get(
 							positionY: true,
 							text: true,
 							id: true,
+							createdAt: true,
+							updatedAt: true,
+							deckOrder: true,
+							deckId: true,
 						},
 						orderBy: {
 							deckOrder: "asc",
@@ -140,6 +153,10 @@ routerDecks.post(
 							positionY: true,
 							text: true,
 							id: true,
+							createdAt: true,
+							updatedAt: true,
+							deckOrder: true,
+							deckId: true,
 						},
 						orderBy: {
 							deckOrder: "asc",
@@ -224,6 +241,10 @@ routerDecks.put(
 						positionY: true,
 						text: true,
 						id: true,
+						createdAt: true,
+						updatedAt: true,
+						deckOrder: true,
+						deckId: true,
 					},
 					orderBy: {
 						deckOrder: "asc",

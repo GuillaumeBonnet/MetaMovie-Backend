@@ -1,6 +1,6 @@
 import request from "supertest";
-import { app } from "./app";
-import prisma from "./prisma-instance";
+import { app } from "../app";
+import prisma from "../prisma-instance";
 import {
 	deck,
 	deckCreateArgs,
@@ -16,7 +16,7 @@ import {
 	DeckApi_WithoutCards,
 	DeckApi_Createable,
 	CardApi_Createable,
-} from "./type";
+} from "../type";
 
 let firstDeck: deck & {
 	cards: card[];
