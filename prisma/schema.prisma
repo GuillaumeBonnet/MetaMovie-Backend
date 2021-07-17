@@ -31,6 +31,14 @@ model deck {
   cards       card[]
   user        user     @relation(fields: [userId], references: [id])
   userId      Int
+  movie       movie    @relation(fields: [movieId], references: [netflixId])
+  movieId     Int      @default(0)
+}
+
+model movie {
+  netflixId Int    @id
+  name      String
+  decks     deck[]
 }
 
 model user {

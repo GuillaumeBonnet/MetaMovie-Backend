@@ -53,6 +53,12 @@ routerDecks.get(
 						updatedAt: true,
 						languageTag: true,
 						name: true,
+						movie: {
+							select: {
+								name: true,
+								netflixId: true,
+							},
+						},
 					},
 				})
 			).map((deck) => {
@@ -62,6 +68,10 @@ routerDecks.get(
 					permissions: getDeckPermissions(deck, req.session?.userId),
 					numberOfCards: deck._count?.cards || 0,
 					ownerName: deck.user.username,
+					movie: {
+						id: deck.movie.netflixId,
+						title: deck.movie.name,
+					},
 				};
 			});
 			res.send(allDecks);
@@ -89,6 +99,12 @@ routerDecks.get(
 					id: deckId,
 				},
 				include: {
+					movie: {
+						select: {
+							name: true,
+							netflixId: true,
+						},
+					},
 					cards: {
 						select: {
 							from: true,
@@ -145,6 +161,23 @@ routerDecks.post(
 			});
 		}
 		try {
+			let movieInDb = await prisma.movie.findUnique({
+				where: {
+					netflixId: body.movie.id,
+				},
+				select: {
+					name: true,
+					netflixId: true,
+				},
+			});
+			if (!movieInDb) {
+				movieInDb = await prisma.movie.create({
+					data: {
+						name: body.movie.title,
+						netflixId: body.movie.id,
+					},
+				});
+			}
 			const deck = await prisma.deck.create({
 				data: {
 					name: body.name,
@@ -166,8 +199,19 @@ routerDecks.post(
 							id: req.session?.userId,
 						},
 					},
+					movie: {
+						connect: {
+							netflixId: movieInDb.netflixId,
+						},
+					},
 				},
 				include: {
+					movie: {
+						select: {
+							name: true,
+							netflixId: true,
+						},
+					},
 					cards: {
 						select: {
 							from: true,
@@ -256,6 +300,12 @@ routerDecks.put(
 				},
 			},
 			include: {
+				movie: {
+					select: {
+						name: true,
+						netflixId: true,
+					},
+				},
 				cards: {
 					select: {
 						from: true,

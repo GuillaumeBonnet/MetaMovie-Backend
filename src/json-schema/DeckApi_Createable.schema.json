@@ -1,49 +1,65 @@
 {
-    "allOf": [
-        {
-            "$ref": "#/definitions/Pick<Pick<deck,\"languageTag\"|\"name\"|\"userId\">,\"languageTag\"|\"name\">"
-        },
-        {
+    "description": "From T, pick a set of properties whose keys are in the union K",
+    "type": "object",
+    "properties": {
+        "movie": {
             "type": "object",
             "properties": {
-                "cards": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/Pick<CardApi,\"text\"|\"from\"|\"to\"|\"position\">"
-                    }
-                }
-            },
-            "required": [
-                "cards"
-            ]
-        }
-    ],
-    "definitions": {
-        "Pick<Pick<deck,\"languageTag\"|\"name\"|\"userId\">,\"languageTag\"|\"name\">": {
-            "description": "From T, pick a set of properties whose keys are in the union K",
-            "type": "object",
-            "properties": {
-                "languageTag": {
-                    "type": [
-                        "null",
-                        "string"
-                    ]
+                "id": {
+                    "type": "number"
                 },
-                "name": {
+                "title": {
                     "type": "string"
                 }
             },
             "required": [
-                "languageTag",
-                "name"
+                "id",
+                "title"
             ]
         },
-        "Pick<CardApi,\"text\"|\"from\"|\"to\"|\"position\">": {
+        "languageTag": {
+            "enum": [
+                "ar",
+                "bn",
+                "de",
+                "en",
+                "es",
+                "fr",
+                "hi",
+                "id",
+                "ja",
+                "pt",
+                "ru",
+                "zh"
+            ],
+            "type": "string"
+        },
+        "name": {
+            "type": "string"
+        },
+        "cards": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/Pick<CardApi,\"text\"|\"id\"|\"from\"|\"to\"|\"position\">"
+            }
+        }
+    },
+    "required": [
+        "cards",
+        "languageTag",
+        "movie",
+        "name"
+    ],
+    "definitions": {
+        "Pick<CardApi,\"text\"|\"id\"|\"from\"|\"to\"|\"position\">": {
             "description": "From T, pick a set of properties whose keys are in the union K",
             "type": "object",
             "properties": {
                 "text": {
                     "type": "string"
+                },
+                "id": {
+                    "type": "number"
                 },
                 "from": {
                     "type": "string"
@@ -69,6 +85,7 @@
             },
             "required": [
                 "from",
+                "id",
                 "position",
                 "text",
                 "to"

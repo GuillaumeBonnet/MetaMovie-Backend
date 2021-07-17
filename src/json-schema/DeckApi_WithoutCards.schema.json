@@ -18,10 +18,48 @@
                 },
                 "numberOfCards": {
                     "type": "number"
+                },
+                "ownerName": {
+                    "type": "string"
+                },
+                "movie": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "number"
+                        },
+                        "title": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "id",
+                        "title"
+                    ]
+                },
+                "languageTag": {
+                    "enum": [
+                        "ar",
+                        "bn",
+                        "de",
+                        "en",
+                        "es",
+                        "fr",
+                        "hi",
+                        "id",
+                        "ja",
+                        "pt",
+                        "ru",
+                        "zh"
+                    ],
+                    "type": "string"
                 }
             },
             "required": [
+                "languageTag",
+                "movie",
                 "numberOfCards",
+                "ownerName",
                 "permissions"
             ]
         }

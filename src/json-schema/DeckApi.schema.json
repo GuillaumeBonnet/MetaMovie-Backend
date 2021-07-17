@@ -1,7 +1,7 @@
 {
     "allOf": [
         {
-            "$ref": "#/definitions/Pick<DeckApi_WithoutCards,\"id\"|\"createdAt\"|\"updatedAt\"|\"languageTag\"|\"name\"|\"permissions\">"
+            "$ref": "#/definitions/Pick<DeckApi_WithoutCards,\"movie\"|\"id\"|\"createdAt\"|\"updatedAt\"|\"languageTag\"|\"name\"|\"permissions\">"
         },
         {
             "type": "object",
@@ -19,10 +19,25 @@
         }
     ],
     "definitions": {
-        "Pick<DeckApi_WithoutCards,\"id\"|\"createdAt\"|\"updatedAt\"|\"languageTag\"|\"name\"|\"permissions\">": {
+        "Pick<DeckApi_WithoutCards,\"movie\"|\"id\"|\"createdAt\"|\"updatedAt\"|\"languageTag\"|\"name\"|\"permissions\">": {
             "description": "From T, pick a set of properties whose keys are in the union K",
             "type": "object",
             "properties": {
+                "movie": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "number"
+                        },
+                        "title": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "id",
+                        "title"
+                    ]
+                },
                 "id": {
                     "type": "number"
                 },
@@ -37,10 +52,21 @@
                     "format": "date-time"
                 },
                 "languageTag": {
-                    "type": [
-                        "null",
-                        "string"
-                    ]
+                    "enum": [
+                        "ar",
+                        "bn",
+                        "de",
+                        "en",
+                        "es",
+                        "fr",
+                        "hi",
+                        "id",
+                        "ja",
+                        "pt",
+                        "ru",
+                        "zh"
+                    ],
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"
@@ -60,6 +86,7 @@
                 "createdAt",
                 "id",
                 "languageTag",
+                "movie",
                 "name",
                 "permissions",
                 "updatedAt"

@@ -1,4 +1,4 @@
-import { card, deck } from "@prisma/client";
+import { card, deck, movie } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import { getDeckPermissions, Role } from "../Services/Permissions";
 import { CardApi, DeckApi, DeckApi_WithoutCards } from "../type";
@@ -21,6 +21,7 @@ const getIdFromUrl = (
 const deckToApiFormat = (
 	deck: deck & {
 		cards: card[];
+		movie: movie;
 	},
 	userId: number
 ) => {
@@ -43,6 +44,10 @@ const deckToApiFormat = (
 		id: deck.id,
 		languageTag: deck.languageTag as DeckApi["languageTag"],
 		name: deck.name,
+		movie: {
+			id: deck.movie.netflixId,
+			title: deck.movie.name,
+		},
 	};
 	return deckApi;
 };

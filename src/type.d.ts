@@ -17,10 +17,11 @@ type CardApi = Omit<
 	};
 };
 type CardApi_Createable = CreateFields<CardApi>;
-type DeckApi_WithoutCards = Omit<deck, "userId"> & {
+type DeckApi_WithoutCards = Omit<deck, "userId" | "movieId"> & {
 	permissions: ObjectPermission[];
 	numberOfCards: number;
 	ownerName: string;
+	movie: { id: number; title: string };
 	languageTag:
 		| "en"
 		| "zh"
@@ -39,14 +40,12 @@ type DeckApi_WithoutCards = Omit<deck, "userId"> & {
 type DeckApi = Omit<DeckApi_WithoutCards, "numberOfCards" | "ownerName"> & {
 	cards: Omit<CardApi, "updatedAt" | "createdAt">[];
 };
-type DeckApi_Createable = Omit<CreateFields<deck>, "userId"> & {
-	cards: CardApi_Createable[];
-};
-// type DeckApi_Update = CreateFields<deck> & { cards: CardApi_Createable[] };
+type DeckApi_Createable = CreateFields<DeckApi>;
 
-type CreateFields<T> = Omit<T, "id" | "updatedAt" | "createdAt">;
-// type UpdateFields<T> = Omit<T, "updatedAt" | "createdAt"> &
-// 	Partial<Pick<T, "updatedAt" | "createdAt">>;
+type CreateFields<T> = Omit<
+	T,
+	"id" | "updatedAt" | "createdAt" | "permissions"
+>;
 
 type UserInfo = {
 	username: string;
