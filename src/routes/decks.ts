@@ -121,6 +121,21 @@ routerDecks.post(
 				.send({ message: "No permission to 'CREATE_DECKS" });
 		}
 		const body: DeckApi_Createable = req.body;
+		if (!body.name) {
+			return res
+				.status(404)
+				.send({ message: "Deck name cannot be empty" });
+		}
+		const deckWithSameName = await prisma.deck.findFirst({
+			where: {
+				name: body.name,
+			},
+		});
+		if (deckWithSameName) {
+			return res.status(404).send({
+				message: `There is already a deck with the name ${body.name}`,
+			});
+		}
 		try {
 			const deck = await prisma.deck.create({
 				data: {

@@ -255,42 +255,42 @@ describe("DECKS", () => {
 			id: -1,
 		};
 
-		const response = await request(app)
-			.put(`/decks/${firstDeck.id}`)
-			.send(jsonInput);
-		if (response.error) {
-			console.log("[gboDebug error]", response.error);
-		}
-		console.log("gboDebug:[response.body]", response.body);
+// 		const response = await request(app)
+// 			.put(`/decks/${firstDeck.id}`)
+// 			.send(jsonInput);
+// 		if (response.error) {
+// 			console.log("[gboDebug error]", response.error);
+// 		}
+// 		console.log("gboDebug:[response.body]", response.body);
 
-		expect(response.status).toBe(200);
-		const responseBody: DeckApi = response.body;
-		parseDates(responseBody);
-		expect(responseBody).toEqual(
-			expect.objectContaining({
-				name: jsonInput.name,
-				languageTag: "FR",
-				createdAt: expect.any(Date),
-				updatedAt: expect.any(Date),
-				id: expect.any(Number),
-			})
-		);
-		const updatedDeckFromDb = await prisma.deck.findUnique({
-			where: {
-				id: firstDeck.id,
-			},
-		});
-		expect(updatedDeckFromDb.name).toBe(responseBody.name);
-		expect(responseBody.name).toBe("first-deck-updated");
-		expect(responseBody.cards.length).toBe(2);
-		expect(responseBody.cards[0].text).toBe("first new card");
-		expect(responseBody.cards[1].text).toBe("firstDeck:card1:became:2");
-		expect(
-			prisma.card.findUnique({
-				where: {
-					id: firstDeck.cards[1].id,
-				},
-			})
-		).not.toBeFalsy();
-	});
-});
+// 		expect(response.status).toBe(200);
+// 		const responseBody: DeckApi = response.body;
+// 		parseDates(responseBody);
+// 		expect(responseBody).toEqual(
+// 			expect.objectContaining({
+// 				name: jsonInput.name,
+// 				languageTag: "FR",
+// 				createdAt: expect.any(Date),
+// 				updatedAt: expect.any(Date),
+// 				id: expect.any(Number),
+// 			})
+// 		);
+// 		const updatedDeckFromDb = await prisma.deck.findUnique({
+// 			where: {
+// 				id: firstDeck.id,
+// 			},
+// 		});
+// 		expect(updatedDeckFromDb.name).toBe(responseBody.name);
+// 		expect(responseBody.name).toBe("first-deck-updated");
+// 		expect(responseBody.cards.length).toBe(2);
+// 		expect(responseBody.cards[0].text).toBe("first new card");
+// 		expect(responseBody.cards[1].text).toBe("firstDeck:card1:became:2");
+// 		expect(
+// 			prisma.card.findUnique({
+// 				where: {
+// 					id: firstDeck.cards[1].id,
+// 				},
+// 			})
+// 		).not.toBeFalsy();
+// 	});
+// });
