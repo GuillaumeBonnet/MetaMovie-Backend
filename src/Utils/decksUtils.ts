@@ -41,7 +41,7 @@ const deckToApiFormat = (
 		createdAt: deck.createdAt,
 		updatedAt: deck.updatedAt,
 		id: deck.id,
-		languageTag: deck.languageTag,
+		languageTag: deck.languageTag as DeckApi["languageTag"],
 		name: deck.name,
 	};
 	return deckApi;

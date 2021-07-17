@@ -58,6 +58,7 @@ routerDecks.get(
 			).map((deck) => {
 				return {
 					...deck,
+					languageTag: deck.languageTag as DeckApi["languageTag"],
 					permissions: getDeckPermissions(deck, req.session?.userId),
 					numberOfCards: deck._count?.cards || 0,
 					ownerName: deck.user.username,
