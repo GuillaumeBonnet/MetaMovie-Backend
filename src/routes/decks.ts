@@ -41,6 +41,12 @@ routerDecks.get(
 								cards: true,
 							},
 						},
+						user: {
+							select: {
+								username: true,
+								id: true,
+							},
+						},
 						userId: true,
 						id: true,
 						createdAt: true,
@@ -54,6 +60,7 @@ routerDecks.get(
 					...deck,
 					permissions: getDeckPermissions(deck, req.session?.userId),
 					numberOfCards: deck._count?.cards || 0,
+					ownerName: deck.user.username,
 				};
 			});
 			res.send(allDecks);

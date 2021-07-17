@@ -46,21 +46,4 @@ const deckToApiFormat = (
 	};
 	return deckApi;
 };
-const deckWithoutCardsToApiFormat = (
-	deck: deck & {
-		numberOfCards: number;
-	},
-	userId: number
-) => {
-	const deckApi: DeckApi_WithoutCards = {
-		permissions: getDeckPermissions(deck, userId),
-		createdAt: deck.createdAt,
-		updatedAt: deck.updatedAt,
-		id: deck.id,
-		languageTag: deck.languageTag,
-		name: deck.name,
-		numberOfCards: deck.numberOfCards,
-	};
-	return deckApi;
-};
-export { getIdFromUrl, deckToApiFormat, deckWithoutCardsToApiFormat };
+export { getIdFromUrl, deckToApiFormat };

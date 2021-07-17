@@ -20,8 +20,9 @@ type CardApi_Createable = CreateFields<CardApi>;
 type DeckApi_WithoutCards = Omit<deck, "userId"> & {
 	permissions: ObjectPermission[];
 	numberOfCards: number;
+	ownerName: string;
 };
-type DeckApi = Omit<DeckApi_WithoutCards, "numberOfCards"> & {
+type DeckApi = Omit<DeckApi_WithoutCards, "numberOfCards" | "ownerName"> & {
 	cards: Omit<CardApi, "updatedAt" | "createdAt">[];
 };
 type DeckApi_Createable = Omit<CreateFields<deck>, "userId"> & {
