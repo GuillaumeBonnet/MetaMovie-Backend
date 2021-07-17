@@ -60,6 +60,13 @@ routerDecks.get(
 							},
 						},
 					},
+					where: !req.query.movieId
+						? {}
+						: {
+								movieId: Number.parseInt(
+									"" + req.query.movieId
+								),
+						  },
 				})
 			).map((deck) => {
 				return {
