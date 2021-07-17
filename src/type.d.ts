@@ -49,5 +49,6 @@ type CreateFields<T> = Omit<
 
 type UserInfo = {
 	username: string;
+	nbOfDecks: number;
 	permissions: Permission[];
 };

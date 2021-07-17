@@ -13,6 +13,11 @@ const fetchUser = async (userId: number) => {
 		select: {
 			username: true,
 			id: true,
+			_count: {
+				select: {
+					decks: true
+				}
+			}
 		},
 	});
 	if (!user) {
@@ -21,11 +26,10 @@ const fetchUser = async (userId: number) => {
 	return user;
 };
 const fetchUserInfo = async (userId: number) => {
-	const user = {
-		username: (await fetchUser(userId)).username,
-	};
+	const user = (await fetchUser(userId));
 	const userInfo: UserInfo = {
 		username: user.username,
+		nbOfDecks: user._count?.decks || 0,
 		permissions: [
 			"CREATE_DECKS",
 			"DELETE_OWN_DECKS",
