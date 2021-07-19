@@ -32,6 +32,27 @@ routerDecks.get(
 				.status(404)
 				.send({ message: "No permission to 'READ_DECKS" });
 		}
+		const parseToNumberOrNull = (queryParam: string) => {
+			if (Number.isInteger(Number.parseInt(queryParam))) {
+				return Number.parseInt(queryParam);
+			} else {
+				return null;
+			}
+		};
+		const handledParams = {
+			movieId: parseToNumberOrNull("" + req.query.movieId),
+			userId: parseToNumberOrNull("" + req.query.userId),
+		};
+
+		const whereClause: Prisma.deckWhereInput = {};
+		if (handledParams.movieId) {
+			whereClause.movieId = handledParams.movieId;
+		}
+		if (handledParams.userId) {
+			whereClause.userId = handledParams.userId;
+		}
+		console.log("gboDebug:[whereClause]", whereClause);
+		//TODO Prisma.validator<Prisma.deckWhereInput>
 		try {
 			const allDecks: DeckApi_WithoutCards[] = (
 				await prisma.deck.findMany({
@@ -60,13 +81,7 @@ routerDecks.get(
 							},
 						},
 					},
-					where: !req.query.movieId
-						? {}
-						: {
-								movieId: Number.parseInt(
-									"" + req.query.movieId
-								),
-						  },
+					where: whereClause,
 				})
 			).map((deck) => {
 				return {

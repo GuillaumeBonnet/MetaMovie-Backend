@@ -51,4 +51,5 @@ type UserInfo = {
 	username: string;
 	nbOfDecks: number;
 	permissions: Permission[];
+	id: number;
 };
