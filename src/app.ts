@@ -1,7 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 import path from "path";
 import logger from "morgan";
-import { routerIndex } from "./routes/index";
 import { pathDecks, routerDecks } from "./routes/decks";
 import { passport, pathUsers, routerUsers } from "./routes/users";
 import { deck } from "../node_modules/.prisma/client/index";
@@ -43,7 +42,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use("/", routerIndex);
 app.use(pathUsers, routerUsers);
 app.use(pathDecks, routerDecks);
 // Error handler for validation errors

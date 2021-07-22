@@ -19,6 +19,7 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { send } from "process";
 import { fetchUser, fetchUserInfo, isUserLogged } from "../Utils/userUtils";
+import { compare, hash } from "bcrypt";
 const routerUsers = express.Router();
 const pathUsers = "/users";
 
@@ -35,7 +36,7 @@ passport.use(
 				if (!userInDb) {
 					return done(null, false, { message: "User not found" });
 				}
-				if (userInDb.passwordHash != password) {
+				if (!(await compare(password, userInDb.passwordHash))) {
 					return done(null, false, { message: "Wrong password" });
 				} else {
 					return done(null, userInDb);
@@ -77,8 +78,8 @@ routerUsers.post(
 				data: {
 					email: body.email,
 					username: body.username,
-					passwordHash: body.password,
-					salt: "anything",
+					passwordHash: await hash(body.password, 10),
+					salt: "col to delete",
 				},
 			});
 		} catch (error) {

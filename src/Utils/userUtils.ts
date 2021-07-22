@@ -1,5 +1,6 @@
 import prisma from "../prisma-instance";
 import { UserInfo } from "../type";
+import bcrypt from "bcrypt";
 
 const isUserLogged = (req: CookieSessionInterfaces.CookieSessionRequest) => {
 	return req.session && !req.session.isNew && req.session.userId;
