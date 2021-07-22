@@ -48,6 +48,5 @@ model user {
   email        String   @unique
   username     String   @unique
   passwordHash String
-  salt         String
   decks        deck[]
 }

@@ -79,7 +79,6 @@ routerUsers.post(
 					email: body.email,
 					username: body.username,
 					passwordHash: await hash(body.password, 10),
-					salt: "col to delete",
 				},
 			});
 		} catch (error) {
