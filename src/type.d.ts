@@ -1,4 +1,4 @@
-import { card, deck } from "@prisma/client";
+import { card, deck, movie } from "@prisma/client";
 import { Permission, ObjectPermission } from "./Services/Permissions";
 
 type SignupBody = {
@@ -53,3 +53,5 @@ type UserInfo = {
 	permissions: Permission[];
 	id: number;
 };
+
+type MovieAndCount = movie & { nbDecks: number };

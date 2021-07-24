@@ -9,6 +9,7 @@ import cors from "cors";
 import cookieSession from "cookie-session";
 import prisma from "./prisma-instance";
 import { user } from "@prisma/client";
+import { pathMovies, routerMovies } from "./routes/movies";
 
 const app = express();
 app.use(
@@ -44,6 +45,7 @@ app.use(passport.session());
 
 app.use(pathUsers, routerUsers);
 app.use(pathDecks, routerDecks);
+app.use(pathMovies, routerMovies);
 // Error handler for validation errors
 app.use(function (err: Error, req: Request, res: Response, next: NextFunction) {
 	if (err instanceof ValidationError) {
