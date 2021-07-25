@@ -37,6 +37,12 @@
         "name": {
             "type": "string"
         },
+        "description": {
+            "type": [
+                "null",
+                "string"
+            ]
+        },
         "cards": {
             "type": "array",
             "items": {
@@ -46,6 +52,7 @@
     },
     "required": [
         "cards",
+        "description",
         "languageTag",
         "movie",
         "name"

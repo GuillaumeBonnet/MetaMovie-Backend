@@ -80,6 +80,7 @@ routerDecks.get(
 								netflixId: true,
 							},
 						},
+						description: true,
 					},
 					where: whereClause,
 				})
@@ -203,6 +204,7 @@ routerDecks.post(
 			const deck = await prisma.deck.create({
 				data: {
 					name: body.name,
+					description: body.description,
 					languageTag: body.languageTag ?? "EN",
 					cards: {
 						create: body.cards.map((card, index) => {

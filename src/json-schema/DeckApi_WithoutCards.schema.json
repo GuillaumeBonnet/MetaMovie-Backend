@@ -1,7 +1,7 @@
 {
     "allOf": [
         {
-            "$ref": "#/definitions/Pick<deck,\"id\"|\"createdAt\"|\"updatedAt\"|\"languageTag\"|\"name\">"
+            "$ref": "#/definitions/Pick<deck,\"id\"|\"createdAt\"|\"updatedAt\"|\"languageTag\"|\"name\"|\"description\">"
         },
         {
             "type": "object",
@@ -65,7 +65,7 @@
         }
     ],
     "definitions": {
-        "Pick<deck,\"id\"|\"createdAt\"|\"updatedAt\"|\"languageTag\"|\"name\">": {
+        "Pick<deck,\"id\"|\"createdAt\"|\"updatedAt\"|\"languageTag\"|\"name\"|\"description\">": {
             "description": "From T, pick a set of properties whose keys are in the union K",
             "type": "object",
             "properties": {
@@ -90,10 +90,17 @@
                 },
                 "name": {
                     "type": "string"
+                },
+                "description": {
+                    "type": [
+                        "null",
+                        "string"
+                    ]
                 }
             },
             "required": [
                 "createdAt",
+                "description",
                 "id",
                 "languageTag",
                 "name",

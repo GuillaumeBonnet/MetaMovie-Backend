@@ -1,7 +1,7 @@
 {
     "allOf": [
         {
-            "$ref": "#/definitions/Pick<DeckApi_WithoutCards,\"movie\"|\"id\"|\"createdAt\"|\"updatedAt\"|\"languageTag\"|\"name\"|\"permissions\">"
+            "$ref": "#/definitions/Pick<DeckApi_WithoutCards,\"movie\"|\"id\"|\"createdAt\"|\"updatedAt\"|\"languageTag\"|\"name\"|\"description\"|\"permissions\">"
         },
         {
             "type": "object",
@@ -19,7 +19,7 @@
         }
     ],
     "definitions": {
-        "Pick<DeckApi_WithoutCards,\"movie\"|\"id\"|\"createdAt\"|\"updatedAt\"|\"languageTag\"|\"name\"|\"permissions\">": {
+        "Pick<DeckApi_WithoutCards,\"movie\"|\"id\"|\"createdAt\"|\"updatedAt\"|\"languageTag\"|\"name\"|\"description\"|\"permissions\">": {
             "description": "From T, pick a set of properties whose keys are in the union K",
             "type": "object",
             "properties": {
@@ -71,6 +71,12 @@
                 "name": {
                     "type": "string"
                 },
+                "description": {
+                    "type": [
+                        "null",
+                        "string"
+                    ]
+                },
                 "permissions": {
                     "type": "array",
                     "items": {
@@ -84,6 +90,7 @@
             },
             "required": [
                 "createdAt",
+                "description",
                 "id",
                 "languageTag",
                 "movie",

@@ -44,6 +44,7 @@ const deckToApiFormat = (
 		id: deck.id,
 		languageTag: deck.languageTag as DeckApi["languageTag"],
 		name: deck.name,
+		description: deck.description,
 		movie: {
 			id: deck.movie.netflixId,
 			title: deck.movie.name,
