@@ -4,37 +4,42 @@
  * Module dependencies.
  */
 
-var { app } = require("../app");
-var debug = require("debug")("metamovie-backend:server");
-var http = require("http");
-const https = require("https");
-const fs = require("fs");
+import { app } from "../app";
+import debugObj from "debug";
+import http from "http";
+import https from "https";
+import fs from "fs/promises";
 
+var debugFunc = debugObj("metamovie-backend:server");
 /**
  * Get port from environment and store in Express.
  */
-
 var port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
+
+var server: https.Server;
 
 /**
  * Create HTTPS server.
  */
+Promise.all([
+	fs.readFile("src/bin/certs/localhost.key"),
+	fs.readFile("src/bin/certs/localhost.crt"),
+]).then(([key, cert]) => {
+	const options = {
+		key,
+		cert,
+	};
+	server = https.createServer(options, app);
 
-const options = {
-	// todo async
-	key: fs.readFileSync("src/bin/certs/localhost.key"),
-	cert: fs.readFileSync("src/bin/certs/localhost.crt"),
-};
-var server = https.createServer(options, app);
+	/**
+	 * Listen on provided port, on all network interfaces.
+	 */
 
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-server.listen(port);
-server.on("error", onError);
-server.on("listening", onListening);
+	server.listen(port);
+	server.on("error", onError);
+	server.on("listening", onListening);
+});
 
 /**
  * Normalize a port into a number, string, or false.
@@ -88,6 +93,10 @@ function onError(error: any) {
 
 function onListening() {
 	var addr = server.address();
+	if (!addr) {
+		debugFunc("Error while reading address for logs.");
+		return;
+	}
 	var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
-	debug("Listening on " + bind);
+	debugFunc("Listening on " + bind);
 }
