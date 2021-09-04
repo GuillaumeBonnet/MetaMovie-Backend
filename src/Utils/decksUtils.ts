@@ -1,6 +1,6 @@
 import { card, deck, movie } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
-import { getDeckPermissions, Role } from "../Services/Permissions";
+import { getDeckPermissions } from "../Services/Permissions";
 import { CardApi, DeckApi, DeckApi_WithoutCards } from "../type";
 
 const getIdFromUrl = (

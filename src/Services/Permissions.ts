@@ -48,12 +48,4 @@ const hasPermission = (
 		?.includes(permission);
 };
 
-export {
-	permissionMap,
-	Role,
-	Permission,
-	ObjectPermission,
-	getDeckPermissions,
-	getRole,
-	hasPermission,
-};
+export { permissionMap, getDeckPermissions, getRole, hasPermission };
