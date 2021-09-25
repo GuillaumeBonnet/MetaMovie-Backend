@@ -30,13 +30,6 @@ app.use(
 	})
 );
 
-// app.use(function (req: Request, res: Response, next: NextFunction) {
-// 	if (req.session) {
-// 		req.session.views = (req.session.views || 0) + 1;
-// 		// req.session.userId = -1;
-// 	}
-// 	next();
-// });
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
