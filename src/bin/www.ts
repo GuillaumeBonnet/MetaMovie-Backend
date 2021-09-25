@@ -22,14 +22,24 @@ var server: https.Server;
 /**
  * Create HTTPS server.
  */
-Promise.all([
-	fs.readFile("src/bin/certs/localhost.key"),
-	fs.readFile("src/bin/certs/localhost.crt"),
-]).then(([key, cert]) => {
-	const options = {
-		key,
-		cert,
-	};
+console.log("gboDebug:[process.env.NODE_ENV]", process.env.NODE_ENV);
+const getOptions = async () => {
+	if (process.env.NODE_ENV == "production") {
+		return {};
+	} else {
+		const [key, cert] = await Promise.all([
+			fs.readFile("src/bin/certs/localhost.key"),
+			fs.readFile("src/bin/certs/localhost.crt"),
+		]);
+		const options = {
+			key,
+			cert,
+		};
+		return options;
+	}
+};
+
+getOptions().then((options) => {
 	server = https.createServer(options, app);
 
 	/**
