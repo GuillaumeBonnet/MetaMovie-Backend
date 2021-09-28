@@ -46,8 +46,9 @@ getOptions().then((options) => {
 	/**
 	 * Listen on provided port, on all network interfaces.
 	 */
-
+	console.log("gboDebug: before server.listen(port);");
 	server.listen(port);
+	console.log("gboDebug: after server.listen(port);");
 	server.on("error", onError);
 	server.on("listening", onListening);
 });
@@ -77,6 +78,7 @@ function normalizePort(val: string) {
  */
 
 function onError(error: any) {
+	console.log("gboDebug:[onError]", error);
 	if (error.syscall !== "listen") {
 		throw error;
 	}
