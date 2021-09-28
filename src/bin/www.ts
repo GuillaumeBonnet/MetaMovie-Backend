@@ -17,8 +17,6 @@ let debugFunc = debugObj("metamovie-backend:server");
 let port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
 
-let server: https.Server | http.Server;
-
 const launchServer = async () => {
 	if (process.env.NODE_ENV == "production") {
 		return http.createServer(app);
@@ -43,6 +41,17 @@ launchServer()
 		server.listen(port);
 		server.on("error", onError);
 		server.on("listening", onListening);
+
+		function onListening() {
+			let addr = server.address();
+			if (!addr) {
+				debugFunc("Error while reading address for logs.");
+				return;
+			}
+			let bind =
+				typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
+			debugFunc("Listening on " + bind);
+		}
 	})
 	.catch((error) => {
 		console.log("[error launching server]", error);
@@ -92,18 +101,4 @@ function onError(error: any) {
 		default:
 			throw error;
 	}
-}
-
-/**
- * Event listener for HTTP server "listening" event.
- */
-
-function onListening() {
-	let addr = server.address();
-	if (!addr) {
-		debugFunc("Error while reading address for logs.");
-		return;
-	}
-	let bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
-	debugFunc("Listening on " + bind);
 }
