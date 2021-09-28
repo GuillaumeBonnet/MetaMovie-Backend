@@ -10,56 +10,50 @@ import http from "http";
 import https from "https";
 import fs from "fs/promises";
 
-var debugFunc = debugObj("metamovie-backend:server");
+let debugFunc = debugObj("metamovie-backend:server");
 /**
  * Get port from environment and store in Express.
  */
-console.log("gboDebug:[process.env.PORT]", process.env.PORT);
-var port = normalizePort(process.env.PORT || "3000");
-console.log("gboDebug:[port]", port);
+let port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
 
-var server: https.Server;
+let server: https.Server | http.Server;
 
-/**
- * Create HTTPS server.
- */
-const getOptions = async () => {
+const launchServer = async () => {
 	if (process.env.NODE_ENV == "production") {
-		return {};
+		return http.createServer(app);
 	} else {
+		// local env
 		const [key, cert] = await Promise.all([
 			fs.readFile("src/bin/certs/localhost.key"),
 			fs.readFile("src/bin/certs/localhost.crt"),
 		]);
-		const options = {
-			key,
-			cert,
-		};
-		return options;
+		return https.createServer(
+			{
+				key,
+				cert,
+			},
+			app
+		);
 	}
 };
 
-getOptions().then((options) => {
-	server = https.createServer(options, app);
-
-	/**
-	 * Listen on provided port, on all network interfaces.
-	 */
-	console.log("gboDebug: before server.listen(port);");
-	server.listen(port);
-	console.log("gboDebug: after server.listen(port);");
-	server.on("error", onError);
-	server.on("listening", onListening);
-});
+launchServer()
+	.then((server) => {
+		server.listen(port);
+		server.on("error", onError);
+		server.on("listening", onListening);
+	})
+	.catch((error) => {
+		console.log("[error launching server]", error);
+	});
 
 /**
  * Normalize a port into a number, string, or false.
  */
 
 function normalizePort(val: string) {
-	var port = parseInt(val, 10);
-
+	let port = parseInt(val, 10);
 	if (isNaN(port)) {
 		// named pipe
 		return val;
@@ -83,7 +77,7 @@ function onError(error: any) {
 		throw error;
 	}
 
-	var bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
+	let bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
 
 	// handle specific listen errors with friendly messages
 	switch (error.code) {
@@ -105,11 +99,11 @@ function onError(error: any) {
  */
 
 function onListening() {
-	var addr = server.address();
+	let addr = server.address();
 	if (!addr) {
 		debugFunc("Error while reading address for logs.");
 		return;
 	}
-	var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
+	let bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
 	debugFunc("Listening on " + bind);
 }
