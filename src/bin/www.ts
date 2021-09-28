@@ -14,7 +14,9 @@ var debugFunc = debugObj("metamovie-backend:server");
 /**
  * Get port from environment and store in Express.
  */
+console.log("gboDebug:[process.env.PORT]", process.env.PORT);
 var port = normalizePort(process.env.PORT || "3000");
+console.log("gboDebug:[port]", port);
 app.set("port", port);
 
 var server: https.Server;
@@ -22,7 +24,6 @@ var server: https.Server;
 /**
  * Create HTTPS server.
  */
-console.log("gboDebug:[process.env.NODE_ENV]", process.env.NODE_ENV);
 const getOptions = async () => {
 	if (process.env.NODE_ENV == "production") {
 		return {};
