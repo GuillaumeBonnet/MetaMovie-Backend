@@ -12,6 +12,10 @@ import { user } from "@prisma/client";
 import { pathMovies, routerMovies } from "./routes/movies";
 
 const app = express();
+app.use((request, response, next) => {
+	console.log("gboDebug:[request.url]", request.url);
+	next();
+});
 app.use(
 	cors({
 		//To allow requests from client
