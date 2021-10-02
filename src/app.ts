@@ -3,12 +3,9 @@ import path from "path";
 import logger from "morgan";
 import { pathDecks, routerDecks } from "./routes/decks";
 import { passport, pathUsers, routerUsers } from "./routes/users";
-import { deck } from "../node_modules/.prisma/client/index";
 import { ValidationError } from "express-json-validator-middleware";
 import cors from "cors";
 import cookieSession from "cookie-session";
-import prisma from "./prisma-instance";
-import { user } from "@prisma/client";
 import { pathMovies, routerMovies } from "./routes/movies";
 
 const app = express();
@@ -22,12 +19,20 @@ app.use(
 		origin: ["https://localhost:8080", "https://www.netflix.com"],
 		credentials: true,
 	})
-); //TODO CORS
+);
 app.use(logger("dev"));
+if (typeof process.env.COOKIE_KEYS != "string") {
+	// COOKIE_KEYS=["currentCookieKey", "oldCookieKey"]
+	throw Error("env variable COOKIE_KEYS needs to be provided");
+}
+const cookieKeys = JSON.parse(process.env.COOKIE_KEYS);
+if (typeof cookieKeys != "object" || !Array.isArray(cookieKeys)) {
+	throw Error("COOKIE_KEYS needs to be an array");
+}
 app.use(
 	cookieSession({
 		name: "auth-meta-movie",
-		keys: ["aa"], //TODO
+		keys: cookieKeys,
 		maxAge: 24 * 60 * 60 * 1000 * 7, // 1 week
 		sameSite: "none",
 		secure: true,
