@@ -8,7 +8,7 @@ import { app } from "../app";
 import debugObj from "debug";
 import http from "http";
 import https from "https";
-import fs from "fs/promises";
+import { promises as fs } from "fs";
 
 let debugFunc = debugObj("metamovie-backend:server");
 /**
