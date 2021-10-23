@@ -13,13 +13,23 @@ import {
 	CardApi_Createable,
 	SignupBody,
 	UserInfo,
+	PasswordResetDemandBody,
+	PasswordResetConfirmationBody,
 } from "../type";
 import { bodyValidator } from "../Services/bodyValidator";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { send } from "process";
-import { fetchUser, fetchUserInfo, isUserLogged } from "../Utils/userUtils";
-import { compare, hash } from "bcrypt";
+import {
+	fetchUser,
+	fetchUserInfo,
+	hashPassword,
+	isUserLogged,
+} from "../Utils/userUtils";
+import { compare } from "bcrypt";
+import { randomBytes } from "crypto";
+import { sendResetPasswordEmail } from "../Services/EmailSender";
+import { match } from "assert";
 const routerUsers = express.Router();
 const pathUsers = "/users";
 
@@ -78,12 +88,12 @@ routerUsers.post(
 				data: {
 					email: body.email,
 					username: body.username,
-					passwordHash: await hash(body.password, 10),
+					passwordHash: await hashPassword(body.password),
 				},
 			});
-		} catch (error) {
+		} catch (error: any) {
 			// 'P2002' Unique constraint failed on the {constraint}
-			if (error.code == "P2002") {
+			if (error?.code == "P2002") {
 				if (error?.meta?.target?.includes("email")) {
 					return res
 						.status(404)
@@ -152,5 +162,90 @@ routerUsers.get("/logout", function (req, res) {
 	req.session = null;
 	res.sendStatus(200);
 });
+
+routerUsers.post(
+	"/reset-password-demand",
+	bodyValidator("PasswordResetDemandBody"),
+	async function (req: Request, res: Response, next: NextFunction) {
+		const body: PasswordResetDemandBody = req.body;
+		const userFromEmail = await prisma.user.findFirst({
+			where: {
+				email: body.email,
+			},
+		});
+		if (!userFromEmail) {
+			return res.status(400).json({
+				message: `No user found with email ${body.email}`,
+			});
+		}
+
+		const passwordResetToken = await prisma.passwordResetToken.create({
+			data: {
+				token: randomBytes(32).toString("hex"),
+				userId: userFromEmail.id,
+			},
+		});
+
+		const link = `${process.env.BASE_URL}/user/reset-password-confirmation/${passwordResetToken.token}`;
+		await sendResetPasswordEmail(userFromEmail.email, link);
+
+		res.sendStatus(200);
+	}
+);
+
+routerUsers.get(
+	"/reset-password-confirmation/:token",
+	bodyValidator("PasswordResetConfirmationBody"),
+	async function (req: Request, res: Response, next: NextFunction) {
+		return res.send("todo form html");
+		// TODO some html
+	}
+);
+
+routerUsers.post(
+	"/reset-password-confirmation/:token",
+	bodyValidator("PasswordResetConfirmationBody"),
+	async function (req: Request, res: Response, next: NextFunction) {
+		const body: PasswordResetConfirmationBody = req.body;
+		const matchingToken = await prisma.passwordResetToken.findFirst({
+			where: {
+				token: req.params.token,
+			},
+			select: {
+				id: true,
+				user: {
+					select: {
+						id: true,
+						email: true,
+						passwordHash: true,
+					},
+				},
+			},
+		});
+		if (!matchingToken) {
+			return res.status(400).json({
+				message: `No reset-password-confirmation demand found.`,
+			});
+		}
+
+		//TODO delete token, authenticate, redirect netflix
+		await prisma.user.update({
+			data: {
+				passwordHash: await hashPassword(body.password),
+			},
+			where: {
+				id: matchingToken.user.id,
+			},
+		});
+		await prisma.passwordResetToken.deleteMany({
+			where: {
+				userId: matchingToken.user.id,
+			},
+		});
+		res.status(200).send(
+			"Password changed. You can use it in the plugin on A movie netflix page."
+		);
+	}
+);
 
 export { routerUsers, pathUsers, passport };

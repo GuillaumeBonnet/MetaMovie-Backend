@@ -7,7 +7,12 @@ import { readFileSync } from "fs";
 import path from "path";
 
 const bodyValidator = (
-	typeName: "DeckApi" | "DeckApi_Createable" | "SignupBody"
+	typeName:
+		| "DeckApi"
+		| "DeckApi_Createable"
+		| "SignupBody"
+		| "PasswordResetDemandBody"
+		| "PasswordResetConfirmationBody"
 ) => {
 	const validator = new Validator({ allErrors: true });
 	const schema = readFileSync(

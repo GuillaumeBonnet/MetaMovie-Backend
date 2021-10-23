@@ -7,6 +7,14 @@ type SignupBody = {
 	username: string;
 };
 
+type PasswordResetDemandBody = {
+	email: string;
+};
+
+type PasswordResetConfirmationBody = {
+	password: string;
+};
+
 type CardApi = Omit<
 	card,
 	"deckOrder" | "deckId" | "positionX" | "positionY"

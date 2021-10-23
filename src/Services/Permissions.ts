@@ -47,5 +47,5 @@ const hasPermission = (
 		.get(getRole(req.session?.userId))
 		?.includes(permission);
 };
-
+export type { Permission, ObjectPermission };
 export { permissionMap, getDeckPermissions, getRole, hasPermission };

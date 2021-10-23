@@ -11,6 +11,7 @@ const settings: TJS.PartialArgs = {
 // optionally pass ts compiler options
 const compilerOptions: TJS.CompilerOptions = {
 	strictNullChecks: true,
+	skipLibCheck: true, // hides errors linked to @types/mocha
 };
 
 // optionally pass a base path
@@ -31,6 +32,8 @@ for (const className of [
 	"DeckApi_WithoutCards",
 	"DeckApi_Createable",
 	"SignupBody",
+	"PasswordResetDemandBody",
+	"PasswordResetConfirmationBody",
 ]) {
 	const schema = TJS.generateSchema(program, className, settings);
 	if (schema) {

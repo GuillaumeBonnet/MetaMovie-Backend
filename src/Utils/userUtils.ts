@@ -1,3 +1,4 @@
+import { hash } from "bcrypt";
 import prisma from "../prisma-instance";
 import { UserInfo } from "../type";
 
@@ -40,4 +41,8 @@ const fetchUserInfo = async (userId: number) => {
 	};
 	return userInfo;
 };
-export { isUserLogged, fetchUser, fetchUserInfo };
+
+const hashPassword = async (password: string) => {
+	return await hash(password, 10);
+};
+export { isUserLogged, fetchUser, fetchUserInfo, hashPassword };

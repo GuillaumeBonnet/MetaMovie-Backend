@@ -43,11 +43,20 @@ model movie {
 }
 
 model user {
-  id           Int      @id @default(autoincrement())
-  createdAt    DateTime @default(now()) @map("creation_timestamp")
-  updatedAt    DateTime @updatedAt @map("update_timestamp")
-  email        String   @unique
-  username     String   @unique
-  passwordHash String
-  decks        deck[]
+  id                 Int                  @id @default(autoincrement())
+  createdAt          DateTime             @default(now()) @map("creation_timestamp")
+  updatedAt          DateTime             @updatedAt @map("update_timestamp")
+  email              String               @unique
+  username           String               @unique
+  passwordHash       String
+  decks              deck[]
+  passwordResetToken passwordResetToken[]
+}
+
+model passwordResetToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  createdAt DateTime @default(now()) @map("creation_timestamp")
+  userId    Int
+  user      user     @relation(fields: [userId], references: [id])
 }
