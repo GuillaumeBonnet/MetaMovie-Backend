@@ -34,28 +34,29 @@ const routerUsers = express.Router();
 const pathUsers = "/users";
 
 passport.use(
-	new LocalStrategy(
-		{ usernameField: "email" },
-		async function (email, password, done) {
-			console.log("gboDebug:[email]", email);
-			console.log("gboDebug:[password]", password);
-			try {
-				const userInDb = await prisma.user.findUnique({
-					where: { email: email },
-				});
-				if (!userInDb) {
-					return done(null, false, { message: "User not found" });
-				}
-				if (!(await compare(password, userInDb.passwordHash))) {
-					return done(null, false, { message: "Wrong password" });
-				} else {
-					return done(null, userInDb);
-				}
-			} catch (err) {
-				return done(err);
+	new LocalStrategy({ usernameField: "email" }, async function (
+		email,
+		password,
+		done
+	) {
+		console.log("gboDebug:[email]", email);
+		console.log("gboDebug:[password]", password);
+		try {
+			const userInDb = await prisma.user.findUnique({
+				where: { email: email },
+			});
+			if (!userInDb) {
+				return done(null, false, { message: "User not found" });
 			}
+			if (!(await compare(password, userInDb.passwordHash))) {
+				return done(null, false, { message: "Wrong password" });
+			} else {
+				return done(null, userInDb);
+			}
+		} catch (err) {
+			return done(err);
 		}
-	)
+	})
 );
 
 passport.serializeUser(function (user, done) {
@@ -187,7 +188,13 @@ routerUsers.post(
 		});
 
 		const link = `${process.env.BASE_URL}/user/reset-password-confirmation/${passwordResetToken.token}`;
-		await sendResetPasswordEmail(userFromEmail.email, link);
+		try {
+			await sendResetPasswordEmail(userFromEmail.email, link);
+		} catch (err) {
+			return res.status(400).json({
+				message: `Error sending Email`,
+			});
+		}
 
 		res.sendStatus(200);
 	}
@@ -195,10 +202,9 @@ routerUsers.post(
 
 routerUsers.get(
 	"/reset-password-confirmation/:token",
-	bodyValidator("PasswordResetConfirmationBody"),
 	async function (req: Request, res: Response, next: NextFunction) {
-		return res.send("todo form html");
-		// TODO some html
+		const resetConfirmPostUrl = `${pathUsers}/reset-password-confirmation/${req.params["token"]}`;
+		return res.render("resetPasswordConfirmation", { resetConfirmPostUrl });
 	}
 );
 
@@ -207,6 +213,7 @@ routerUsers.post(
 	bodyValidator("PasswordResetConfirmationBody"),
 	async function (req: Request, res: Response, next: NextFunction) {
 		const body: PasswordResetConfirmationBody = req.body;
+		console.log("gboDebug:[body]", body);
 		const matchingToken = await prisma.passwordResetToken.findFirst({
 			where: {
 				token: req.params.token,
@@ -223,8 +230,8 @@ routerUsers.post(
 			},
 		});
 		if (!matchingToken) {
-			return res.status(400).json({
-				message: `No reset-password-confirmation demand found.`,
+			return res.render("errorPage", {
+				errorMessage: `No previous reset password demand was found.`,
 			});
 		}
 

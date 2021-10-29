@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "nodemon ./src/bin/www.ts",
     "serve-windows": "set DEBUG=metamovie-backend:* & npm serve",
-    "build": "tsc --project ./",
+    "build": "build:css && tsc --project ./",
+    "build:css": "postcss public/stylesheets/tailwind.css -o public/stylesheets/style.css",
     "test": "jest",
     "gen-json-schema": "npx ts-node .\\scripts\\buildJsonSchema.ts",
     "db-seed": "npx prisma db seed --preview-feature",
@@ -22,6 +23,7 @@
     "cookie-session": "^1.4.0",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
+    "ejs": "^3.1.6",
     "express": "~4.16.1",
     "express-json-validator-middleware": "^2.1.1",
     "morgan": "~1.9.1",
@@ -36,6 +38,7 @@
     "@babel/core": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
     "@babel/preset-typescript": "^7.12.7",
+    "@types/autoprefixer": "^10.2.0",
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-session": "^2.0.42",
     "@types/cors": "^2.8.9",
@@ -48,10 +51,12 @@
     "@types/superagent": "^4.1.10",
     "@types/supertest": "^2.0.10",
     "jest": "^26.6.3",
+    "postcss-cli": "^9.0.1",
     "prettier": "^2.2.1",
     "prisma": "^2.23.0",
     "superagent": "^6.1.0",
     "supertest": "^6.0.1",
+    "tailwindcss": "^2.2.17",
     "typescript-json-schema": "^0.48.0"
   }
 }

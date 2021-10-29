@@ -41,10 +41,10 @@ app.use(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, "public")));
 app.use(passport.initialize());
 app.use(passport.session());
-
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
 app.use(pathUsers, routerUsers);
 app.use(pathDecks, routerDecks);
 app.use(pathMovies, routerMovies);
@@ -58,5 +58,6 @@ app.use(function (err: Error, req: Request, res: Response, next: NextFunction) {
 		next(err); // pass error on if not a validation error
 	}
 });
+app.use("/static", express.static(path.join(__dirname, "../static")));
 
 export { app };
