@@ -4,9 +4,8 @@
   "private": true,
   "scripts": {
     "serve": "nodemon ./src/bin/www.ts",
-    "serve-windows": "set DEBUG=metamovie-backend:* & npm serve",
     "build": "build:css && tsc --project ./",
-    "build:css": "postcss public/stylesheets/tailwind.css -o public/stylesheets/style.css",
+    "build:css": "postcss static/stylesheets/tailwind.css -o static/stylesheets/style.css",
     "test": "jest",
     "gen-json-schema": "npx ts-node .\\scripts\\buildJsonSchema.ts",
     "db-seed": "npx prisma db seed --preview-feature",

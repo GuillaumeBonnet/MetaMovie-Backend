@@ -180,6 +180,7 @@ routerUsers.post(
 			});
 		}
 
+		// awaiting the email is sent before sending the response won't be good with scalling.
 		const passwordResetToken = await prisma.passwordResetToken.create({
 			data: {
 				token: randomBytes(32).toString("hex"),
@@ -187,7 +188,7 @@ routerUsers.post(
 			},
 		});
 
-		const link = `${process.env.BASE_URL}/user/reset-password-confirmation/${passwordResetToken.token}`;
+		const link = `${process.env.BASE_URL}${pathUsers}/reset-password-confirmation/${passwordResetToken.token}`;
 		try {
 			await sendResetPasswordEmail(userFromEmail.email, link);
 		} catch (err) {
@@ -213,7 +214,6 @@ routerUsers.post(
 	bodyValidator("PasswordResetConfirmationBody"),
 	async function (req: Request, res: Response, next: NextFunction) {
 		const body: PasswordResetConfirmationBody = req.body;
-		console.log("gboDebug:[body]", body);
 		const matchingToken = await prisma.passwordResetToken.findFirst({
 			where: {
 				token: req.params.token,
@@ -250,7 +250,7 @@ routerUsers.post(
 			},
 		});
 		res.status(200).send(
-			"Password changed. You can use it in the plugin on A movie netflix page."
+			"Password changed. You can use it in the plugin on a movie netflix page."
 		);
 	}
 );

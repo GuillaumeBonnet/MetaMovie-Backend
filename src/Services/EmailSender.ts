@@ -72,7 +72,7 @@ const sendResetPasswordEmail = async (
             line-height: 2rem;
           "
         >
-          Hello ${email} ,
+          Hello ${email},
         </p>
         <p
           style="
