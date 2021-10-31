@@ -21,6 +21,7 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { send } from "process";
 import {
+	activateUserIfRight,
 	fetchUser,
 	fetchUserInfo,
 	hashPassword,
@@ -90,6 +91,7 @@ routerUsers.post(
 					email: body.email,
 					username: body.username,
 					passwordHash: await hashPassword(body.password),
+					isActive: false
 				},
 			});
 		} catch (error: any) {
@@ -110,6 +112,31 @@ routerUsers.post(
 		res.sendStatus(200);
 	}
 );
+
+routerUsers.post(
+	"/email-activation/:userId/:validationNumber",
+	async function (req: Request, res: Response, next: NextFunction) {
+		try {
+			await activateUserIfRight(req);
+		} catch (error) {
+			return res.status(400).json({message: error});
+		}
+	}
+);
+routerUsers.get(
+	"/email-activation/:userId/:validationNumber",
+	async function (req: Request, res: Response, next: NextFunction) {
+		try {
+			await activateUserIfRight(req);
+		} catch (error) {
+			return res.render("errorPage", {
+				errorMessage: error,
+			});
+		}
+		return res.render("emailConfirmed", {
+			
+		});
+	});
 
 routerUsers.get("/info", async function (req, res, next) {
 	if (!isUserLogged(req)) {
