@@ -1,5 +1,6 @@
 import { hash } from "bcrypt";
 import { Request } from "express";
+import { FunctionnalError } from "../app";
 import prisma from "../prisma-instance";
 import { UserInfo } from "../type";
 
@@ -23,7 +24,7 @@ const fetchUser = async (userId: number) => {
 		},
 	});
 	if (!user) {
-		throw new Error("User not found");
+		throw new FunctionnalError("User not found");
 	}
 	return user;
 };
@@ -50,40 +51,46 @@ const hashPassword = async (password: string) => {
 const activateUserIfRight = async (req: Request) => {
 	const userId = Number.parseInt(req.params.userId);
 	const validationNumber = Number.parseInt(req.params.validationNumber);
-	if(!userId) {
-		throw "UserId not found." ;
+	if (!userId) {
+		throw "UserId not found.";
 	}
-	if(!validationNumber) {
-		throw "Validation number not found." ;
+	if (!validationNumber) {
+		throw "Validation number not found.";
 	}
 	const user = await prisma.user.findUnique({
 		where: {
-			id:  userId
+			id: userId,
 		},
 		select: {
 			id: true,
 			isActive: true,
-			confirmEmailUserToken: true
-		}
+			confirmEmailUserToken: true,
+		},
 	});
-	if(!user) {
+	if (!user) {
 		throw "UserId not found.";
 	}
-	if(user.confirmEmailUserToken[0].randomNumber != validationNumber) {
-		throw "Wrong validation Number." ;
+	if (user.confirmEmailUserToken[0].randomNumber != validationNumber) {
+		throw "Wrong validation Number.";
 	}
 	await prisma.user.update({
 		where: {
-			id: user.id
+			id: user.id,
 		},
 		data: {
-			isActive: true
-		}
+			isActive: true,
+		},
 	});
 	await prisma.confirmEmailUserToken.delete({
 		where: {
-			userId: user.id
-		}
+			userId: user.id,
+		},
 	});
-}
-export { isUserLogged, fetchUser, fetchUserInfo, hashPassword, activateUserIfRight };
+};
+export {
+	isUserLogged,
+	fetchUser,
+	fetchUserInfo,
+	hashPassword,
+	activateUserIfRight,
+};

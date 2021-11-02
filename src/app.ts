@@ -8,6 +8,13 @@ import cors from "cors";
 import cookieSession from "cookie-session";
 import { pathMovies, routerMovies } from "./routes/movies";
 
+export class FunctionnalError extends Error {
+	constructor(functionnalMessage: string) {
+		super(functionnalMessage);
+		this.functionnalMessage = functionnalMessage;
+	}
+	public functionnalMessage: string;
+}
 const app = express();
 app.use((request, response, next) => {
 	console.log("gboDebug:[request.url]", request.url);
@@ -54,10 +61,11 @@ app.use(function (err: Error, req: Request, res: Response, next: NextFunction) {
 		// At this point you can execute your error handling code
 		res.status(400).send(JSON.stringify(err, null, 2));
 		next();
+	} else if (err instanceof FunctionnalError) {
+		return res.status(400).json({ message: err.functionnalMessage });
 	} else {
 		next(err); // pass error on if not a validation error
 	}
-	//TODO instanceof ErrorWithMessage
 });
 app.use("/static", express.static(path.join(__dirname, "../static")));
 
