@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "prisma-generate": "prisma generate",
     "serve": "nodemon ./src/bin/www.ts",
     "build": "build:css && tsc --project ./",
     "build:css": "postcss static/stylesheets/tailwind.css -o static/stylesheets/style.css",

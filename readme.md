@@ -12,6 +12,7 @@ Put the information in the env variable
 
     ```
     DATABASE_URL="postgresql://user:password@localhost:5432/DBname"
+    ROOT_URL="https://localhost:3000"
     COOKIE_KEYS=["currentCookieKey", "oldCookieKey"]
     BASE_URL="https://localhost:3000"
     EMAIL_USER=""

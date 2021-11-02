@@ -57,6 +57,7 @@ app.use(function (err: Error, req: Request, res: Response, next: NextFunction) {
 	} else {
 		next(err); // pass error on if not a validation error
 	}
+	//TODO instanceof ErrorWithMessage
 });
 app.use("/static", express.static(path.join(__dirname, "../static")));
 

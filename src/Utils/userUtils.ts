@@ -1,4 +1,5 @@
 import { hash } from "bcrypt";
+import { Request } from "express";
 import prisma from "../prisma-instance";
 import { UserInfo } from "../type";
 
@@ -45,4 +46,44 @@ const fetchUserInfo = async (userId: number) => {
 const hashPassword = async (password: string) => {
 	return await hash(password, 10);
 };
-export { isUserLogged, fetchUser, fetchUserInfo, hashPassword };
+
+const activateUserIfRight = async (req: Request) => {
+	const userId = Number.parseInt(req.params.userId);
+	const validationNumber = Number.parseInt(req.params.validationNumber);
+	if(!userId) {
+		throw "UserId not found." ;
+	}
+	if(!validationNumber) {
+		throw "Validation number not found." ;
+	}
+	const user = await prisma.user.findUnique({
+		where: {
+			id:  userId
+		},
+		select: {
+			id: true,
+			isActive: true,
+			confirmEmailUserToken: true
+		}
+	});
+	if(!user) {
+		throw "UserId not found.";
+	}
+	if(user.confirmEmailUserToken[0].randomNumber != validationNumber) {
+		throw "Wrong validation Number." ;
+	}
+	await prisma.user.update({
+		where: {
+			id: user.id
+		},
+		data: {
+			isActive: true
+		}
+	});
+	await prisma.confirmEmailUserToken.delete({
+		where: {
+			userId: user.id
+		}
+	});
+}
+export { isUserLogged, fetchUser, fetchUserInfo, hashPassword, activateUserIfRight };

@@ -1,34 +1,27 @@
-import { card, deck, Prisma, user } from "@prisma/client";
+import { user } from "@prisma/client";
 import express from "express";
 import { NextFunction, Request, Response } from "express";
-import logger from "morgan";
 import prisma from "../prisma-instance";
-import { deckToApiFormat, getIdFromUrl } from "../Utils/decksUtils";
 import {
-	CardApi,
-	DeckApi,
-	CreateFields,
-	DeckApi_WithoutCards,
-	DeckApi_Createable,
-	CardApi_Createable,
 	SignupBody,
-	UserInfo,
 	PasswordResetDemandBody,
 	PasswordResetConfirmationBody,
 } from "../type";
 import { bodyValidator } from "../Services/bodyValidator";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
-import { send } from "process";
 import {
-	fetchUser,
+	activateUserIfRight,
 	fetchUserInfo,
 	hashPassword,
 	isUserLogged,
 } from "../Utils/userUtils";
 import { compare } from "bcrypt";
-import { randomBytes } from "crypto";
-import { sendResetPasswordEmail } from "../Services/EmailSender";
+import { randomBytes, randomInt } from "crypto";
+import {
+	sendEmailConfirmationEmail,
+	sendResetPasswordEmail,
+} from "../Services/EmailSender";
 import { match } from "assert";
 const routerUsers = express.Router();
 const pathUsers = "/users";
@@ -39,8 +32,6 @@ passport.use(
 		password,
 		done
 	) {
-		console.log("gboDebug:[email]", email);
-		console.log("gboDebug:[password]", password);
 		try {
 			const userInDb = await prisma.user.findUnique({
 				where: { email: email },
@@ -50,9 +41,13 @@ passport.use(
 			}
 			if (!(await compare(password, userInDb.passwordHash))) {
 				return done(null, false, { message: "Wrong password" });
-			} else {
-				return done(null, userInDb);
 			}
+			if (!userInDb.isActive) {
+				return done(null, false, {
+					message: "Email not confirmed yet.",
+				});
+			}
+			return done(null, userInDb);
 		} catch (err) {
 			return done(err);
 		}
@@ -84,30 +79,81 @@ routerUsers.post(
 	bodyValidator("SignupBody"),
 	async function (req: Request, res: Response, next: NextFunction) {
 		const body: SignupBody = req.body;
-		try {
-			const user = await prisma.user.create({
-				data: {
-					email: body.email,
-					username: body.username,
-					passwordHash: await hashPassword(body.password),
-				},
-			});
-		} catch (error: any) {
-			// 'P2002' Unique constraint failed on the {constraint}
-			if (error?.code == "P2002") {
-				if (error?.meta?.target?.includes("email")) {
-					return res
-						.status(404)
-						.json({ message: "Email is already used." });
-				} else if (error?.meta?.target?.includes("username")) {
-					return res
-						.status(404)
-						.json({ message: "Username is already used." });
+		const createUser = async () => {
+			try {
+				const user = await prisma.user.create({
+					data: {
+						email: body.email,
+						username: body.username,
+						passwordHash: await hashPassword(body.password),
+						isActive: false,
+						confirmEmailUserToken: {
+							create: {
+								randomNumber: randomInt(0, Math.pow(10, 6)),
+								// randomNumber in the [0;999999] interval
+							},
+						},
+					},
+					select: {
+						confirmEmailUserToken: {
+							select: {
+								randomNumber: true,
+							},
+						},
+						email: true,
+						id: true,
+					},
+				});
+				return user;
+			} catch (error: any) {
+				// 'P2002' Unique constraint failed on the {constraint}
+				if (error?.code == "P2002") {
+					if (error?.meta?.target?.includes("email")) {
+						throw { message: "Email is already used." };
+					} else if (error?.meta?.target?.includes("username")) {
+						throw { message: "Username is already used." };
+					}
 				}
+				throw error;
 			}
-			return next(error);
+		};
+
+		try {
+			const user = await createUser();
+			const link = `${process.env.ROOT_URL}${pathUsers}/email-activation/${user.id}/${user.confirmEmailUserToken[0].randomNumber}`;
+			await sendEmailConfirmationEmail(user.email, link);
+			res.sendStatus(200);
+		} catch (error: any) {
+			if (error.message) {
+				return res.status(404).json({ message: error.message });
+			} else {
+				return next(error);
+			}
 		}
-		res.sendStatus(200);
+	}
+);
+
+routerUsers.post(
+	"/email-activation/:userId/:validationNumber",
+	async function (req: Request, res: Response, next: NextFunction) {
+		try {
+			await activateUserIfRight(req);
+		} catch (error) {
+			return res.status(400).json({ message: error });
+		}
+	}
+);
+routerUsers.get(
+	"/email-activation/:userId/:validationNumber",
+	async function (req: Request, res: Response, next: NextFunction) {
+		try {
+			await activateUserIfRight(req);
+		} catch (error) {
+			return res.render("errorPage", {
+				errorMessage: error,
+			});
+		}
+		return res.render("emailConfirmed", {});
 	}
 );
 
@@ -188,7 +234,7 @@ routerUsers.post(
 			},
 		});
 
-		const link = `${process.env.BASE_URL}${pathUsers}/reset-password-confirmation/${passwordResetToken.token}`;
+		const link = `${process.env.ROOT_URL}${pathUsers}/reset-password-confirmation/${passwordResetToken.token}`;
 		try {
 			await sendResetPasswordEmail(userFromEmail.email, link);
 		} catch (err) {

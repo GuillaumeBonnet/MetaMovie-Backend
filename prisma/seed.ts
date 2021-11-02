@@ -10,6 +10,7 @@ async function main() {
 			email: "joe.average@metamovie.com.invalid",
 			username: "avgJoe",
 			passwordHash: await hash("password", 10),
+			isActive: true,
 		},
 	});
 
@@ -20,6 +21,7 @@ async function main() {
 			email: "jane.doe@metamovie.com.invalid",
 			username: "janeDoe",
 			passwordHash: await hash("password", 10),
+			isActive: true,
 		},
 	});
 
@@ -54,8 +56,7 @@ async function main() {
 					data: [
 						{
 							deckOrder: 0,
-							text:
-								"The cast is largely comprised of non-actors.",
+							text: "The cast is largely comprised of non-actors.",
 							from: "0:00:00",
 							to: "0:00:30",
 							positionX: 50,
@@ -63,8 +64,7 @@ async function main() {
 						},
 						{
 							deckOrder: 1,
-							text:
-								"The script won the 2013 Bengala award, and was published in short story form. The next year the script was selected for the Sundance Screenwriters Lab won the Gabriel Figueroa Development Grant at Los Cabos Film Festival.",
+							text: "The script won the 2013 Bengala award, and was published in short story form. The next year the script was selected for the Sundance Screenwriters Lab won the Gabriel Figueroa Development Grant at Los Cabos Film Festival.",
 							from: "0:00:20",
 							to: "0:01:00",
 							positionX: 50,
@@ -115,8 +115,7 @@ async function main() {
 							deckOrder: 0,
 							from: "0:22:15",
 							to: "0:22:20",
-							text:
-								"The murder victims' costumes were meticulously recreated from forensic evidence that was lent to the production.",
+							text: "The murder victims' costumes were meticulously recreated from forensic evidence that was lent to the production.",
 							positionX: 75.51,
 							positionY: 33.22,
 						},
@@ -124,8 +123,7 @@ async function main() {
 							deckOrder: 1,
 							from: "0:43:39",
 							to: "0:43:45",
-							text:
-								"the theme music is that used by National Nine News (Australia) in the 80s and 90s.",
+							text: "the theme music is that used by National Nine News (Australia) in the 80s and 90s.",
 							positionX: 32.26,
 							positionY: 31.19,
 						},
@@ -133,8 +131,7 @@ async function main() {
 							deckOrder: 2,
 							from: "0:52:54",
 							to: "0:52:56",
-							text:
-								"The year is 1969 yet this book has a barcode when they started to be seen in stores after 1974",
+							text: "The year is 1969 yet this book has a barcode when they started to be seen in stores after 1974",
 							positionX: 46.2,
 							positionY: 68.23,
 						},
@@ -142,8 +139,7 @@ async function main() {
 							deckOrder: 3,
 							from: "2:31:10",
 							to: "2:31:13",
-							text:
-								"Those books are the one Robert Graysmith published in real life.",
+							text: "Those books are the one Robert Graysmith published in real life.",
 							positionX: 51,
 							positionY: 21.86,
 						},
@@ -151,8 +147,7 @@ async function main() {
 							deckOrder: 4,
 							from: "2:33:32",
 							to: "2:33:42",
-							text:
-								'The only real comment that Robert Graysmith said about the finished screenplay was, "God, now I see why my wife divorced me."',
+							text: 'The only real comment that Robert Graysmith said about the finished screenplay was, "God, now I see why my wife divorced me."',
 							positionX: 50,
 							positionY: 50,
 						},
@@ -175,8 +170,7 @@ async function main() {
 							deckOrder: 0,
 							from: "0:22:15",
 							to: "0:22:20",
-							text:
-								"The murder victims' costumes were meticulously recreated from forensic evidence that was lent to the production.",
+							text: "The murder victims' costumes were meticulously recreated from forensic evidence that was lent to the production.",
 							positionX: 75.51,
 							positionY: 33.22,
 						},
@@ -184,8 +178,7 @@ async function main() {
 							deckOrder: 1,
 							from: "0:43:39",
 							to: "0:43:45",
-							text:
-								"the theme music is that used by National Nine News (Australia) in the 80s and 90s.",
+							text: "the theme music is that used by National Nine News (Australia) in the 80s and 90s.",
 							positionX: 32.26,
 							positionY: 31.19,
 						},
@@ -193,8 +186,7 @@ async function main() {
 							deckOrder: 2,
 							from: "0:52:54",
 							to: "0:52:56",
-							text:
-								"The year is 1969 yet this book has a barcode when they started to be seen in stores after 1974",
+							text: "The year is 1969 yet this book has a barcode when they started to be seen in stores after 1974",
 							positionX: 46.2,
 							positionY: 68.23,
 						},
@@ -202,8 +194,7 @@ async function main() {
 							deckOrder: 3,
 							from: "2:31:10",
 							to: "2:31:13",
-							text:
-								"Those books are the one Robert Graysmith published in real life.",
+							text: "Those books are the one Robert Graysmith published in real life.",
 							positionX: 51,
 							positionY: 21.86,
 						},
@@ -211,8 +202,7 @@ async function main() {
 							deckOrder: 4,
 							from: "2:33:32",
 							to: "2:33:42",
-							text:
-								'The only real comment that Robert Graysmith said about the finished screenplay was, "God, now I see why my wife divorced me."',
+							text: 'The only real comment that Robert Graysmith said about the finished screenplay was, "God, now I see why my wife divorced me."',
 							positionX: 50,
 							positionY: 50,
 						},
