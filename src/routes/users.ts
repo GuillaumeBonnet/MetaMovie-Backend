@@ -174,6 +174,7 @@ routerUsers.post("/login", async function (req, res, next) {
 			const userInfo = await fetchUserInfo(req.session?.userId);
 			return res.send(userInfo);
 		} catch (err) {
+			req.session = null;
 			return next(err);
 		}
 	}
