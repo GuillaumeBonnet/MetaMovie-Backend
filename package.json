@@ -5,7 +5,7 @@
   "scripts": {
     "prisma-generate": "prisma generate",
     "serve": "nodemon ./src/bin/www.ts",
-    "build": "build:css && tsc --project ./",
+    "build": "npm run build:css && tsc",
     "build:css": "postcss static/stylesheets/tailwind.css -o static/stylesheets/style.css",
     "test": "jest",
     "gen-json-schema": "npx ts-node .\\scripts\\buildJsonSchema.ts",
