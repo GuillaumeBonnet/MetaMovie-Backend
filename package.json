@@ -11,7 +11,8 @@
     "gen-json-schema": "npx ts-node .\\scripts\\buildJsonSchema.ts",
     "db-seed": "npx prisma db seed --preview-feature",
     "ts-node": "ts-node --compiler-options \"{\\\"module\\\":\\\"commonjs\\\"}\"",
-    "postinstall": "npm run build && npx copyfiles ./src/json-schema/* ./build",
+    "copy-files": "npx copyfiles ./src/json-schema/* ./src/views/* ./build",
+    "postinstall": "npm run build && npm run copy-files",
     "start": "node build/src/bin/www.js"
   },
   "dependencies": {
