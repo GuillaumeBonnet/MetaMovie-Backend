@@ -67,6 +67,11 @@ app.use(function (err: Error, req: Request, res: Response, next: NextFunction) {
 		next(err); // pass error on if not a validation error
 	}
 });
+console.log("gboDebug:[__dirname]", __dirname);
+console.log(
+	"gboDebug:[path.join(__dirname, ../static)]",
+	path.join(__dirname, "../static")
+);
 app.use("/static", express.static(path.join(__dirname, "../static")));
 
 export { app };
