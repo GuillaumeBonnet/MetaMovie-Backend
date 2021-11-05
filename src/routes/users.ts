@@ -286,6 +286,7 @@ routerUsers.post(
 		await prisma.user.update({
 			data: {
 				passwordHash: await hashPassword(body.password),
+				isActive: true,
 			},
 			where: {
 				id: matchingToken.user.id,
