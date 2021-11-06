@@ -81,7 +81,7 @@ function normalizePort(val: string) {
  */
 
 function onError(error: any) {
-	console.log("gboDebug:[onError]", error);
+	console.log("[onError]", error);
 	if (error.syscall !== "listen") {
 		throw error;
 	}

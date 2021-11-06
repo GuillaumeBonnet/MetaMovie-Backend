@@ -17,10 +17,6 @@ export class FunctionnalError extends Error {
 }
 const app = express();
 app.set("trust proxy", 1);
-app.use((request, response, next) => {
-	console.log("gboDebug:[request.url]", request.url);
-	next();
-});
 app.use(
 	cors({
 		//To allow requests from client

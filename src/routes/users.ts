@@ -180,9 +180,6 @@ routerUsers.post("/login", async function (req, res, next) {
 		}
 	}
 	passport.authenticate("local", function (err, user: user, info) {
-		console.log("gboDebug:[err]", err);
-		console.log("gboDebug:[user]", user);
-		console.log("gboDebug:[info]", info);
 		if (err) {
 			return next(err);
 		}
@@ -196,11 +193,9 @@ routerUsers.post("/login", async function (req, res, next) {
 			if (err) {
 				return next(err);
 			}
-			console.log("gboDebug:[user]", user);
 			req.session = {
 				userId: user.id,
 			};
-			console.log("gboDebug:[req.session]", req.session);
 			const userInfo = await fetchUserInfo(req.session?.userId);
 			return res.send(userInfo);
 		});

@@ -51,7 +51,6 @@ routerDecks.get(
 		if (handledParams.userId) {
 			whereClause.userId = handledParams.userId;
 		}
-		console.log("gboDebug:[whereClause]", whereClause);
 		//TODO Prisma.validator<Prisma.deckWhereInput>
 		try {
 			const allDecks: DeckApi_WithoutCards[] = (
@@ -350,16 +349,11 @@ routerDecks.put(
 			},
 		});
 		try {
-			console.log("gboDebug: before update");
-			const [
-				deleteOp_result,
-				updateOp_result,
-			] = await prisma.$transaction([deleteOp, updateOp]);
-			console.log("gboDebug:[deleteOp_result]", deleteOp_result);
-			console.log("gboDebug:[updateOp_result]", updateOp_result);
+			const [deleteOp_result, updateOp_result] =
+				await prisma.$transaction([deleteOp, updateOp]);
 			res.send(deckToApiFormat(updateOp_result, req.session?.userId));
 		} catch (error) {
-			console.log("gboDebug:[error]", error);
+			console.log("[error]", error);
 			next(error);
 		}
 	}
@@ -387,19 +381,11 @@ routerDecks.delete(
 			},
 		});
 		try {
-			console.log("gboDebug: before delete");
-			const [
-				deleteCardsOp_result,
-				deleteOp_result,
-			] = await prisma.$transaction([deleteCardsOp, deleteOp]);
-			console.log(
-				"gboDebug:[deleteCardsOp_result]",
-				deleteCardsOp_result
-			);
-			console.log("gboDebug:[deleteOp_result]", deleteOp_result);
+			const [deleteCardsOp_result, deleteOp_result] =
+				await prisma.$transaction([deleteCardsOp, deleteOp]);
 			res.send();
 		} catch (error) {
-			console.log("gboDebug:[error]", error);
+			console.log("[error]", error);
 			next(error);
 		}
 	}
