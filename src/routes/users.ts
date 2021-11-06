@@ -159,6 +159,7 @@ routerUsers.get(
 
 routerUsers.get("/info", async function (req, res, next) {
 	if (!isUserLogged(req)) {
+		res.cookie("meta-movie-test", "testValue");
 		return res.sendStatus(400);
 	}
 	try {
