@@ -199,6 +199,7 @@ routerUsers.post("/login", async function (req, res, next) {
 			req.session = {
 				userId: user.id,
 			};
+			console.log("gboDebug:[req.session]", req.session);
 			const userInfo = await fetchUserInfo(req.session?.userId);
 			return res.send(userInfo);
 		});
