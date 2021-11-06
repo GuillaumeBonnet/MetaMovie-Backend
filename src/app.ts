@@ -20,7 +20,10 @@ app.set("trust proxy", 1);
 app.use(
 	cors({
 		//To allow requests from client
-		origin: ["https://localhost:8080", "https://www.netflix.com"],
+		origin:
+			process.env.ROOT_URL == "https://meta-movie-api.herokuapp.com"
+				? "https://www.netflix.com"
+				: "https://localhost:8080",
 		credentials: true,
 	})
 );
