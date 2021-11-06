@@ -16,6 +16,7 @@ export class FunctionnalError extends Error {
 	public functionnalMessage: string;
 }
 const app = express();
+app.set("trust proxy", 1);
 app.use((request, response, next) => {
 	console.log("gboDebug:[request.url]", request.url);
 	next();
