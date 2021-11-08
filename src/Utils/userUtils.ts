@@ -70,6 +70,9 @@ const activateUserIfRight = async (req: Request) => {
 	if (!user) {
 		throw "UserId not found.";
 	}
+	if (!user.confirmEmailUserToken.length) {
+		throw "No ongoing account activation.";
+	}
 	if (user.confirmEmailUserToken[0].randomNumber != validationNumber) {
 		throw "Wrong validation Number.";
 	}
@@ -86,6 +89,7 @@ const activateUserIfRight = async (req: Request) => {
 			userId: user.id,
 		},
 	});
+	return userId;
 };
 export {
 	isUserLogged,

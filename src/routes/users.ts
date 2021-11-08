@@ -137,7 +137,10 @@ routerUsers.post(
 	"/email-activation/:userId/:validationNumber",
 	async function (req: Request, res: Response, next: NextFunction) {
 		try {
-			await activateUserIfRight(req);
+			const userId = await activateUserIfRight(req);
+			req.session = {
+				userId,
+			};
 		} catch (error) {
 			return res.status(400).json({ message: error });
 		}
@@ -147,7 +150,10 @@ routerUsers.get(
 	"/email-activation/:userId/:validationNumber",
 	async function (req: Request, res: Response, next: NextFunction) {
 		try {
-			await activateUserIfRight(req);
+			const userId = await activateUserIfRight(req);
+			req.session = {
+				userId,
+			};
 		} catch (error) {
 			return res.render("errorPage", {
 				errorMessage: error,
